@@ -8,7 +8,7 @@ get_subdirectories() {
   if [[ -d "$directory" ]]; then
     find "$directory" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
   else
-    log_err "$directory doesn't exist"
+    log_fatal "Parent directory '$directory' doesn't exist"
     return 1
   fi
 }
