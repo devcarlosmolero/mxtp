@@ -13,7 +13,8 @@
 ## Installation
 
 ```bash
-brew install mxtp
+brew tap devcarlosmolero/homebrew https://codeberg.org/devcarlosmolero/homebrew
+brew install devcarlosmolero/homebrew/mxtp
 ```
 
 ## Usage
