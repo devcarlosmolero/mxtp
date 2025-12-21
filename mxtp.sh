@@ -36,16 +36,16 @@ function show_lengths() {
 function execute() {
     case $1 in
     "$CMD_DURATION")
-        source commands/duration.sh $2 "mp3"
+        source "$MXTP_ROOT_DIR/commands/duration.sh" $2 "mp3" $3
         ;;
     "$CMD_TRIM")
-        source commands/trim.sh $2 "mp3"
+        source "$MXTP_ROOT_DIR/commands/trim.sh" $2 "mp3" $3
         ;;
     "$CMD_NORMALIZE")
-        source commands/normalize.sh $2 "mp3"
+        source "$MXTP_ROOT_DIR/commands/normalize.sh" $2 "mp3" $3
         ;;
     "$CMD_REORGANIZE")
-        source commands/reorganize.sh $2 "mp3" $3
+        source "$MXTP_ROOT_DIR/commands/reorganize.sh" $2 "mp3" $3
         ;;
     esac
 }
@@ -88,7 +88,7 @@ if [[ $CMD == "duration" ]]; then
 fi
 
 if [[ $CMD == "tutorial" ]]; then
-    gum pager <mxtp.txt
+    gum pager <"$MXTP_ROOT_DIR/mxtp.txt"
 fi
 
 if [[ $CMD == "menu" ]]; then
