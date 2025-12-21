@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source lib/pb.sh
-source lib/filesystem.sh
-source lib/gum.sh
+source "$MXTP_ROOT_DIR/lib/pb.sh"
+source "$MXTP_ROOT_DIR/lib/filesystem.sh"
+source "$MXTP_ROOT_DIR/lib/gum.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
 EXT=$2
