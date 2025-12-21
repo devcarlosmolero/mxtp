@@ -1,0 +1,39 @@
+#!/bin/bash
+
+source lib/pb.sh
+source lib/filesystem.sh
+source lib/format.sh
+
+ROOT_DIR="$MXTP_ROOT_DIR/$1"
+EXT="$2"
+TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
+
+total_seconds=0
+processed_count=0
+
+if [[ "$3" != "--seconds" ]]; then
+    pb_init "$TOTAL_FILES" 30
+fi
+
+while IFS= read -r -d '' file; do
+    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file")
+    total_seconds=$((total_seconds + ${duration%.*}))
+
+    if [[ "$3" != "--seconds" ]]; then
+        ((processed_count++))
+
+        label=$(basename "$file")
+        label=${label:0:40}
+        pb_update "$processed_count" "Processing: $label"
+    fi
+
+done < <(get_files_ext "$ROOT_DIR" "$EXT")
+
+if [[ "$3" == "--seconds" ]]; then
+    echo "$total_seconds"
+    exit 0
+fi
+
+echo
+echo "✔ Total duration: $(from_seconds_to_duration $total_seconds)"
+

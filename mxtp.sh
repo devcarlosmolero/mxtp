@@ -1,41 +1,36 @@
 #!/bin/bash
 
 source lib/startup.sh
-source lib/filesystem.sh
+source lib/gum.sh
 source lib/logger.sh
-source lib/utils.sh
 
 CMD_DURATION="DURATION"
-CMD_SHUFFLE="SHUFFLE"
 CMD_TRIM="TRIM"
 CMD_NORMALIZE="NORMALIZE"
-CMD_PREVIEW="PREVIEW"
+CMD_REORGANIZE="REORGANIZE"
 
 CMD=$1
 
 function show_cmds() {
     local choices
 
-    choices=$(gum choose "$CMD_DURATION" "$CMD_SHUFFLE" "$CMD_TRIM" "$CMD_NORMALIZE"  "$CMD_PREVIEW" --no-limit --header "Run one or multiple commands")
+    choices=$(gum choose "$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE" --no-limit --header "Run one or multiple commands")
     echo "$choices"
 }
 
 function execute() {
     case $1 in
     "$CMD_DURATION")
-        source commands/duration.sh $2
-        ;;
-    "$CMD_SHUFFLE")
-        source commands/shuffle.sh $2
+        source commands/duration.sh $2 "mp3"
         ;;
     "$CMD_TRIM")
-        source commands/trim.sh $2
+        source commands/trim.sh $2 "mp3"
         ;;
     "$CMD_NORMALIZE")
-        source commands/normalize.sh $2
+        source commands/normalize.sh $2 "mp3"
         ;;
-    "$CMD_PREVIEW")
-        source commands/preview.sh $2
+    "$CMD_REORGANIZE")
+        source commands/reorganize.sh $2 "mp3"
         ;;
     esac
 }
@@ -53,58 +48,61 @@ printf '%b\n' \
 |^|....\e[38;5;51m/:::O::::::::::O:::\\\....|  \e[38;5;250mLinkedIn: /in/carlosmolero • Fediverse: @iscarlosmolero
 |/\`---/--------------------\`---|
 \`.___/ /====/ /=//=/ /====/____/
-     \`--------------------'\e[0m"
+     \`--------------------'\e[0m\n"
 
 check_dependency "bash"
 check_dependency "ffmpeg"
+check_dependency "auto-editor"
+
+if [[ $CMD == "duration" ]]; then
+    directory=$(select_directory)
+
+    if [ -z "$directory" ]; then
+        log_fatal "No directory selected"
+    fi
+
+    execute $CMD_DURATION "$directory"
+fi
 
 if [[ $CMD == "tutorial" ]]; then
     gum pager <mxtp.txt
 fi
 
 if [[ $CMD == "menu" ]]; then
-    
-    if [[ $2 == "--help" ]]; then 
-        echo
-        echo "Usage: mxtp menu [flags]"
-        echo
-        echo "Flags:"
-        echo "  --replace            Replace the original files"
-        echo
-        exit 1
-    fi
+    mapfile -t cmds < <(show_cmds | sed '/^$/d')
 
-    cmds=$(show_cmds)
-
-    if [[ -z "$cmds" ]]; then
+    if [[ ${#cmds[@]} -eq 0 ]]; then
         log_fatal "No commands selected"
-        exit 1
+        exit 0
     fi
 
-    directory=$(get_subdirectories "$MXTP_ROOT_DIR" | gum filter)
+    directory=$(select_directory)
 
-    if [[ -z "$directory" ]]; then
+    if [ -z "$directory" ]; then
         log_fatal "No directory selected"
-        exit 1
+    fi
+
+    if [ ! -d "$MXTP_ROOT_DIR/$directory/mxtp" ]; then
+        mkdir -p "$MXTP_ROOT_DIR/$directory/mxtp"
+    else
+        rm -rf "$MXTP_ROOT_DIR/$directory/mxtp"
+        mkdir -p "$MXTP_ROOT_DIR/$directory/mxtp"
     fi
 
     gum confirm && {
-        for cmd in $cmds; do
+        for cmd in "${cmds[@]}"; do
             execute "$cmd" "$directory"
         done
-    } || {
-        exit 1
-    }
-
+    } || exit 0
 fi
 
-if [[ "$CMD" != "tutorial" && "$CMD" != "menu" ]]; then
+if [[ "$CMD" != "tutorial" && "$CMD" != "menu" && "$CMD" != "duration" ]]; then
     echo
-    echo "Usage: mxtp menu [flags]"
+    echo "Usage: mxtp [cmd]"
     echo
     echo "Commands:"
     echo "  tutorial            Show the tutorial and instructions"
     echo "  menu                Choose the commands you want to run"
     echo
-    exit 1
+    exit 0
 fi
