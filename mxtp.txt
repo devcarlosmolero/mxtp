@@ -1,32 +1,28 @@
 MXTP - Mixtape CLI Tools
 
-Purpose:
-This CLI helps you record mixtapes on cassette with maximum quality by:
-- Minimizing distortion
-- Saving space
-- Calculating total playback time
-- Previewing track distribution between Side A and Side B
+Purpose: MXTP is a command-line tool to prepare mixtapes 
+for cassette recording with maximum quality. It helps you:
+
+- Minimize distortion
+- Optimize cassette space
+- Calculate total playback time
+- Preview and organize track distribution between Side A and Side B
 
 Important notes:
-- The order of commands is fixed and cannot be changed:
-  DURATION → SHUFFLE → TRIMMING → NORMALIZE → PREVIEW
-- For safety, files are cloned by default instead of being replaced.
-- To enable direct replacement of original files, use the --replace flag.
 
-Commands:
+- The order of commands is fixed: TRIM → NORMALIZE → REORGANIZE.
+- For safety, original files are cloned by default rather than overwritten.
 
-DURATION
-  Calculates the total playback time of all tracks in the selected folder.
-  Ensures the mixtape fits within the cassette length.
+Commands
 
-SHUFFLE
-  Randomizes the order of tracks before recording.
-
-TRIMMING
-  Removes leading and trailing silence from audio tracks.
+TRIM
+Removes leading and trailing silence from audio tracks, 
+reducing unnecessary gaps and saving space on the cassette.
 
 NORMALIZE
-  Adjusts audio levels to achieve consistent volume across all tracks.
+Adjusts the volume of all tracks to a consistent level, 
+ensuring smooth playback without sudden jumps in loudness.
 
-PREVIEW
-  Simulates how tracks will be distributed between Side A and Side B.
+REORGANIZE
+Distributes tracks between Side A and Side B to optimize cassette usage, 
+automatically balancing the sides for minimal empty space.

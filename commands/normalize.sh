@@ -53,7 +53,7 @@ while IFS= read -r -d '' file; do
 
     label="$(basename "$file")"
     label="${label:0:40}"
-    pb_update "$processed_count" "Processing: $label"
+    pb_update "$processed_count" "Normalizing: $label"
 done < <(get_files_ext "$ROOT_DIR" "$EXT")
 
 echo

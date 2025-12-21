@@ -61,7 +61,7 @@ while IFS= read -r -d '' file; do
     ((processed_count++))
 
     label="${base:0:40}"
-    pb_update "$processed_count" "Processing: $label"
+    pb_update "$processed_count" "Trimming: $label"
 done < <(get_files_ext "$ROOT_DIR" "$EXT")
 
 after_seconds=$(source commands/duration.sh "$1/mxtp" "mp3" "--seconds")

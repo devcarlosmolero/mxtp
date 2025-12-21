@@ -8,7 +8,7 @@ source lib/logger.sh
 
 ROOT_DIR="$MXTP_ROOT_DIR/$1"  
 EXT=$2                
-CASSETTE_MIN=60 
+CASSETTE_MIN=$3
 
 SIDE_DURATION=$(( (CASSETTE_MIN * 60) / 2 ))
 MARGIN=120                                 
@@ -83,4 +83,4 @@ echo
 echo "Total cassette usage: $total_usage%"
 
 echo
-echo "✔ Distribution, renaming and metrics complete!"
+echo "✔ Reorganization complete!"

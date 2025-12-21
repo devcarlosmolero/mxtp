@@ -3,6 +3,7 @@
 source lib/startup.sh
 source lib/gum.sh
 source lib/logger.sh
+source lib/utils.sh
 
 CMD_DURATION="DURATION"
 CMD_TRIM="TRIM"
@@ -11,10 +12,23 @@ CMD_REORGANIZE="REORGANIZE"
 
 CMD=$1
 
+CASSETTE_LENGTH_46=46
+CASSETTE_LENGTH_60=60
+CASSETTE_LENGTH_90=90
+
+length=
+
 function show_cmds() {
     local choices
 
     choices=$(gum choose "$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE" --no-limit --header "Run one or multiple commands")
+    echo "$choices"
+}
+
+function show_lengths() {
+    local choices
+
+    choices=$(gum choose "$CASSETTE_LENGTH_46" "$CASSETTE_LENGTH_60" "$CASSETTE_LENGTH_90" --header "Select the length of your cassette")
     echo "$choices"
 }
 
@@ -30,7 +44,7 @@ function execute() {
         source commands/normalize.sh $2 "mp3"
         ;;
     "$CMD_REORGANIZE")
-        source commands/reorganize.sh $2 "mp3"
+        source commands/reorganize.sh $2 "mp3" $3
         ;;
     esac
 }
@@ -48,7 +62,7 @@ printf '%b\n' \
 |^|....\e[38;5;51m/:::O::::::::::O:::\\\....|  \e[38;5;250mLinkedIn: /in/carlosmolero • Fediverse: @iscarlosmolero
 |/\`---/--------------------\`---|
 \`.___/ /====/ /=//=/ /====/____/
-     \`--------------------'\e[0m\n"
+     \`--------------------'\e[0m"
 
 check_dependency "bash"
 check_dependency "ffmpeg"
@@ -71,6 +85,15 @@ fi
 if [[ $CMD == "menu" ]]; then
     mapfile -t cmds < <(show_cmds | sed '/^$/d')
 
+    if contains cmds[@] "$CMD_REORGANIZE"; then
+        length=$(show_lengths | sed '/^$/d')
+
+        if [[ -z "$length" ]]; then
+            log_fatal "No length selected"
+            exit 1
+        fi
+    fi
+
     if [[ ${#cmds[@]} -eq 0 ]]; then
         log_fatal "No commands selected"
         exit 0
@@ -91,7 +114,7 @@ if [[ $CMD == "menu" ]]; then
 
     gum confirm && {
         for cmd in "${cmds[@]}"; do
-            execute "$cmd" "$directory"
+            execute "$cmd" "$directory" "$length"
         done
     } || exit 0
 fi
@@ -101,8 +124,9 @@ if [[ "$CMD" != "tutorial" && "$CMD" != "menu" && "$CMD" != "duration" ]]; then
     echo "Usage: mxtp [cmd]"
     echo
     echo "Commands:"
-    echo "  tutorial            Show the tutorial and instructions"
-    echo "  menu                Choose the commands you want to run"
+    echo "  tutorial            Display the full tutorial and usage instructions"
+    echo "  duration            Show the total playback duration of your mixtape"
+    echo "  menu                Open an interactive menu to choose commands to run"
     echo
     exit 0
 fi
