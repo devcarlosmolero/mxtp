@@ -81,6 +81,34 @@ process_side side2 "$side2_time" "Side 2"
 total_usage=$(echo "($side1_time + $side2_time)/(2*$SIDE_DURATION)*100" | bc -l | awk '{printf "%.1f", $0}')
 echo
 echo "Total cassette usage: $total_usage%"
+echo
+
+side1_names=()
+for f in "${side1[@]}"; do
+    side1_names+=("$(truncate "$(basename "$f")")")
+done
+
+side2_names=()
+for f in "${side2[@]}"; do
+    side2_names+=("$(truncate "$(basename "$f")")")
+done
+
+max_rows=${#side1_names[@]}
+((${#side2_names[@]} > max_rows)) && max_rows=${#side2_names[@]}
+
+table_content="Side A|Side B\n"
+
+for ((i = 0; i < max_rows; i++)); do
+    a="${side1_names[i]:-}"
+    b="${side2_names[i]:-}"
+    table_content+="$a|$b\n"
+done
+
+printf "%b" "$table_content" | gum table \
+    --separator "|" \
+    --border double \
+    --cell.padding "0 1" \
+    --print
 
 echo
 echo "✔ Reorganization complete!"

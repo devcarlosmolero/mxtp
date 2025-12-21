@@ -14,3 +14,13 @@ function from_seconds_to_duration() {
         printf "%ds" "$seconds"
     fi
 }
+
+function truncate() {
+    local s="$1"
+    local max=40
+    if ((${#s} > max)); then
+        echo "${s:0:$((max-1))}…"
+    else
+        echo "$s"
+    fi
+}

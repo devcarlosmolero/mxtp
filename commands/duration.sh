@@ -23,7 +23,7 @@ while IFS= read -r -d '' file; do
         ((processed_count++))
 
         label=$(basename "$file")
-        label=${label:0:40}
+        label="$(truncate "$label")"
         pb_update "$processed_count" "Processing: $label"
     fi
 

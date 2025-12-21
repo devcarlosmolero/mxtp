@@ -3,6 +3,7 @@
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/gum.sh"
+source "$MXTP_ROOT_DIR/lib/format.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
 EXT=$2
@@ -52,7 +53,7 @@ while IFS= read -r -d '' file; do
     ((processed_count++))
 
     label="$(basename "$file")"
-    label="${label:0:40}"
+    label="$(truncate "$label")"
     pb_update "$processed_count" "Normalizing: $label"
 done < <(get_files_ext "$ROOT_DIR" "$EXT")
 

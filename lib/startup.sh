@@ -17,5 +17,8 @@ function check_dependency() {
     "auto-editor")
         command -v auto-editor >/dev/null 2>&1 || { log_fatal "auto-editor is required but not installed."; }
         ;;
+    "gum")
+        command -v gum >/dev/null 2>&1 || { log_fatal "gum is required but not installed."; }
+        ;;
     esac
 }
