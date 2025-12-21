@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source lib/logger.sh
+source "$MXTP_ROOT_DIR/lib/logger.sh"
 
 function check_dependency() {
     case $1 in

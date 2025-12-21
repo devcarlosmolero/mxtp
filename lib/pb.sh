@@ -17,9 +17,9 @@ function pb_update() {
 
     label=${label:0:40}
 
-    local percent=$(( current * 100 / PB_TOTAL ))
-    local filled=$(( percent * PB_WIDTH / 100 ))
-    local empty=$(( PB_WIDTH - filled ))
+    local percent=$((current * 100 / PB_TOTAL))
+    local filled=$((percent * PB_WIDTH / 100))
+    local empty=$((PB_WIDTH - filled))
 
     printf "\r\033[2K\033[?25l["
 

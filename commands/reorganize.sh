@@ -1,17 +1,17 @@
 #!/bin/bash
 
-source lib/pb.sh
-source lib/filesystem.sh
-source lib/gum.sh
-source lib/format.sh
-source lib/logger.sh
+source "$MXTP_ROOT_DIR/lib/pb.sh"
+source "$MXTP_ROOT_DIR/lib/filesystem.sh"
+source "$MXTP_ROOT_DIR/lib/gum.sh"
+source "$MXTP_ROOT_DIR/lib/format.sh"
+source "$MXTP_ROOT_DIR/lib/logger.sh"
 
-ROOT_DIR="$MXTP_ROOT_DIR/$1"  
-EXT=$2                
+ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
+EXT=$2
 CASSETTE_MIN=$3
 
-SIDE_DURATION=$(( (CASSETTE_MIN * 60) / 2 ))
-MARGIN=120                                 
+SIDE_DURATION=$(((CASSETTE_MIN * 60) / 2))
+MARGIN=120
 
 pb_init 100 30
 
@@ -30,7 +30,7 @@ for dur in "${durations[@]}"; do
 done
 
 cassette_total=$((CASSETTE_MIN * 60))
-if (( $(echo "$total_duration + 2*$MARGIN > $cassette_total" | bc -l) )); then
+if (($(echo "$total_duration + 2*$MARGIN > $cassette_total" | bc -l))); then
     log_fatal "Total duration ($(from_seconds_to_duration "$total_duration")) exceeds cassette limit of $CASSETTE_MIN min"
 fi
 
@@ -43,7 +43,7 @@ for i in "${!files[@]}"; do
     file="${files[$i]}"
     dur=${durations[$i]}
 
-    if (( $(echo "$side1_time <= $side2_time" | bc -l) )); then
+    if (($(echo "$side1_time <= $side2_time" | bc -l))); then
         side1+=("$file")
         side1_time=$(echo "$side1_time + $dur" | bc)
     else

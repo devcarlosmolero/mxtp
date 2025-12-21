@@ -1,9 +1,10 @@
 #!/bin/bash
 
-source lib/startup.sh
-source lib/gum.sh
-source lib/logger.sh
-source lib/utils.sh
+source "$MXTP_ROOT_DIR/lib/startup.sh"
+source "$MXTP_ROOT_DIR/lib/gum.sh"
+source "$MXTP_ROOT_DIR/lib/logger.sh"
+source "$MXTP_ROOT_DIR/lib/utils.sh"
+
 
 CMD_DURATION="DURATION"
 CMD_TRIM="TRIM"
@@ -68,6 +69,14 @@ check_dependency "bash"
 check_dependency "ffmpeg"
 check_dependency "auto-editor"
 
+if [[ -z "$MXTP_USER_ROOT_DIR" ]]; then
+    log_fatal "MXTP_USER_ROOT_DIR must be set to the parent folder containing your mixtape subfolders (add to ~/.bashrc or ~/.zshrc)."
+fi
+
+if [[ ! -d "$MXTP_USER_ROOT_DIR" ]]; then
+    log_fatal "MXTP_USER_ROOT_DIR ('$MXTP_USER_ROOT_DIR') does not exist or is not a directory."
+fi
+
 if [[ $CMD == "duration" ]]; then
     directory=$(select_directory)
 
@@ -105,11 +114,11 @@ if [[ $CMD == "menu" ]]; then
         log_fatal "No directory selected"
     fi
 
-    if [ ! -d "$MXTP_ROOT_DIR/$directory/mxtp" ]; then
-        mkdir -p "$MXTP_ROOT_DIR/$directory/mxtp"
+    if [ ! -d "$MXTP_USER_ROOT_DIR/$directory/mxtp" ]; then
+        mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
     else
-        rm -rf "$MXTP_ROOT_DIR/$directory/mxtp"
-        mkdir -p "$MXTP_ROOT_DIR/$directory/mxtp"
+        rm -rf "$MXTP_USER_ROOT_DIR/$directory/mxtp"
+        mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
     fi
 
     gum confirm && {

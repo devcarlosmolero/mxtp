@@ -1,10 +1,10 @@
 #!/bin/bash
 
-source lib/pb.sh
-source lib/filesystem.sh
-source lib/format.sh
+source "$MXTP_ROOT_DIR/lib/pb.sh"
+source "$MXTP_ROOT_DIR/lib/filesystem.sh"
+source "$MXTP_ROOT_DIR/lib/format.sh"
 
-ROOT_DIR="$MXTP_ROOT_DIR/$1"
+ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
 EXT="$2"
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
 
@@ -36,4 +36,3 @@ fi
 
 echo
 echo "✔ Total duration: $(from_seconds_to_duration $total_seconds)"
-

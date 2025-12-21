@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source lib/logger.sh
+source "$MXTP_ROOT_DIR/lib/logger.sh"
 
 function get_subdirectories() {
   local directory="$1"
@@ -13,10 +13,10 @@ function get_subdirectories() {
   fi
 }
 
-function get_count_files_ext(){
+function get_count_files_ext() {
   find "$1" -maxdepth 1 -type f -iname "*.$2" | wc -l
 }
 
-function get_files_ext(){
+function get_files_ext() {
   find "$1" -maxdepth 1 -type f -iname "*.$2" -print0
 }

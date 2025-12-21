@@ -4,7 +4,7 @@ source lib/pb.sh
 source lib/filesystem.sh
 source lib/gum.sh
 
-ROOT_DIR="$MXTP_ROOT_DIR/$1"
+ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
 EXT=$2
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
@@ -30,8 +30,8 @@ while IFS= read -r -d '' file; do
         -af "loudnorm=I=-14:TP=-1.5:LRA=11" \
         -c:a pcm_s16le "$tmp_file" >/dev/null 2>&1; then
         failed=true
-    fi  
-                      
+    fi
+
     if ! $failed; then
         if ! ffmpeg -nostdin -y -i "$tmp_file" \
             -codec:a libmp3lame -q:a 2 \

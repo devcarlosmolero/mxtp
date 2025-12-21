@@ -37,13 +37,12 @@ mxtp menu             # Open an interactive menu to choose commands to run
 
 ## License
 
-Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+Shield: [![MIT License][mit-shield]][mit]
 
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+This work is licensed under the [MIT License][mit].
 
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+[![MIT License][mit-image]][mit]
 
-[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
-[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+[mit]: https://opensource.org/licenses/MIT
+[mit-image]: https://img.shields.io/badge/License-MIT-yellow.svg
+[mit-shield]: https://img.shields.io/badge/License-MIT-lightgrey.svg
