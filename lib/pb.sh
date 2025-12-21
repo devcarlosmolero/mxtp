@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PB_TOTAL=0
 PB_WIDTH=50

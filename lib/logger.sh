@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function log_debug() {
     gum log --structured --level debug "$1"

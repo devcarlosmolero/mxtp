@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function from_seconds_to_duration() {
     local total_sec=$(printf "%.0f" "$1")

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
@@ -16,7 +16,7 @@ processed_count=0
 
 failed_files=()
 
-before_seconds=$(source commands/duration.sh "$1" "mp3" "--seconds")
+before_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1" "mp3" "--seconds")
 
 pb_init "$TOTAL_FILES" 30
 
@@ -64,7 +64,7 @@ while IFS= read -r -d '' file; do
     pb_update "$processed_count" "Trimming: $label"
 done < <(get_files_ext "$ROOT_DIR" "$EXT")
 
-after_seconds=$(source commands/duration.sh "$1/mxtp" "mp3" "--seconds")
+after_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1/mxtp" "mp3" "--seconds")
 
 before_fmt=$(from_seconds_to_duration "$before_seconds")
 after_fmt=$(from_seconds_to_duration "$after_seconds")
