@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source "$MXTP_ROOT_DIR/lib/startup.sh"
 source "$MXTP_ROOT_DIR/lib/gum.sh"
