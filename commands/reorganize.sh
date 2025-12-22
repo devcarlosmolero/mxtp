@@ -36,20 +36,20 @@ fi
 
 side1=()
 side2=()
-side1_time=$MARGIN
-side2_time=$MARGIN
+side1_duration=$MARGIN
+side2_duration=$MARGIN
 
 for i in "${!files[@]}"; do
     file="${files[$i]}"
     dur=${durations[$i]}
     dur=${dur:-0}
 
-    if (($(echo "$side1_time <= $side2_time" | bc -l))); then
+    if (($(echo "$side1_duration <= $side2_duration" | bc -l))); then
         side1+=("$file")
-        side1_time=$(echo "$side1_time + $dur" | bc)
+        side1_duration=$(echo "$side1_duration + $dur" | bc)
     else
         side2+=("$file")
-        side2_time=$(echo "$side2_time + $dur" | bc)
+        side2_duration=$(echo "$side2_duration + $dur" | bc)
     fi
 done
 
@@ -67,13 +67,21 @@ function create_silence() {
 
 function process_side() {
     local -n _side_files=$1
-    local _side_time=$2
+    local _side_duration=$2
     local _label=$3
 
-    local _real_time=$(echo "$_side_time - $MARGIN" | bc)
-    local _pct=$(printf "%.1f" "$(echo "$_real_time/$SIDE_MINUTES*100" | bc -l)")
+    local _used_duration=$(echo "$_side_duration - $MARGIN" | bc)
+    local _used_duration_int=$(printf "%.0f" "$_used_duration")
 
-    pb_update "$(printf "%.0f" "$_pct")" "(~$(from_seconds_to_duration "$_real_time"))"
+    local _silence_duration=$(echo "$SIDE_MINUTES - $_used_duration" | bc)
+    local _silence_duration_int=$(printf "%.0f" "$_silence_duration")
+
+    local _total_side_duration=$(echo "$_used_duration + $_silence_duration" | bc)
+    local _total_side_duration_int=$(printf "%.0f" "$_total_side_duration")
+
+    local _pct=$(printf "%.0f" "$(echo "$_used_duration / $SIDE_MINUTES * 100" | bc -l)")
+    pb_update "$_pct" "$_label -> $(from_seconds_to_duration "$_used_duration") + $(from_seconds_to_duration "$_silence_duration") silence = $(from_seconds_to_duration "$_total_side_duration"))"
+    echo
 
     local _count=1
     for f in "${_side_files[@]}"; do
@@ -88,32 +96,21 @@ function process_side() {
         ((_count++))
     done
 
-    local _used_time=$(echo "$_side_time - $MARGIN" | bc)
-    local _silence_time=$(echo "$SIDE_MINUTES - $_used_time" | bc)
-
-    local _used_time_int=$(printf "%.0f" "$_used_time")
-    local _silence_time_int=$(printf "%.0f" "$_silence_time")
-
-    if ((_silence_time_int > 0)); then
+    if ((_silence_duration_int > 0)); then
         if [[ "$_label" == "Side 1" ]]; then
-            silence_name=$(printf "A%02d_Silence_%ss.mp3" "$_count" "$_silence_time_int")
+            silence_name=$(printf "A%02d_Silence_%ss.mp3" "$_count" "$_silence_duration_int")
         else
-            silence_name=$(printf "B%02d_Silence_%ss.mp3" "$_count" "$_silence_time_int")
+            silence_name=$(printf "B%02d_Silence_%ss.mp3" "$_count" "$_silence_duration_int")
         fi
-
-        create_silence "$_silence_time" "$ROOT_DIR/mxtp/$silence_name"
-
-        local _total_side_time=$(echo "$_used_time + $_silence_time" | bc)
-        local _total_side_time_int=$(printf "%.0f" "$_total_side_time")
+        create_silence "$_silence_duration" "$ROOT_DIR/mxtp/$silence_name"
     fi
 }
 
-process_side side1 "$side1_time" "Side 1"
-process_side side2 "$side2_time" "Side 2"
 
-echo
+process_side side1 "$side1_duration" "Side 1"
+process_side side2 "$side2_duration" "Side 2"
 
-total_usage=$(echo "(($side1_time + $side2_time - 2*$MARGIN)/(2*$SIDE_MINUTES))*100" | bc -l | awk '{printf "%.1f", $0}')
+total_usage=$(echo "(($side1_duration + $side2_duration - 2*$MARGIN)/(2*$SIDE_MINUTES))*100" | bc -l | awk '{printf "%.1f", $0}')
 echo
 echo "Total cassette usage: $total_usage%"
 echo

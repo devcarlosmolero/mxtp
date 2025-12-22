@@ -16,7 +16,7 @@ function pb_update() {
     local _current=$1
     local _label=$2
 
-    label=${label:0:40}
+    _label=${_label:0:40}
 
     local _percent=$((_current * 100 / PB_TOTAL))
     local _filled=$((_percent * PB_WIDTH / 100))
@@ -27,7 +27,7 @@ function pb_update() {
     printf "%0.s█" $(seq 1 $_filled)
     printf "%0.s░" $(seq 1 $_empty)
 
-    printf "] %3d%% %s" "$_percent" "$label"
+    printf "] %3d%% %s" "$_percent" "$_label"
 
     printf "\033[?25h"
 
