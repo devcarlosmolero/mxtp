@@ -43,7 +43,7 @@ while IFS= read -r -d '' file; do
 
     if ! $failed; then
         if ! ffmpeg -nostdin -y -i "$tmp_file" \
-            -codec:a libmp3lame -q:a 2 \
+            -codec:a libmp3lame -b:a 320k \
             "$output_file" >/dev/null 2>&1; then
             failed=true
         fi
@@ -69,8 +69,8 @@ after_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1/mxtp" "mp3" "--
 before_fmt=$(from_seconds_to_duration "$before_seconds")
 after_fmt=$(from_seconds_to_duration "$after_seconds")
 
-if [[ before_seconds -gt 0 ]]; then
-    saved=$((100 - (after_seconds * 100 / before_seconds)))
+if (($(echo "$before_seconds > 0" | bc -l))); then
+    saved=$(echo "scale=2; 100 - ($after_seconds * 100 / $before_seconds)" | bc)
 else
     saved=0
 fi

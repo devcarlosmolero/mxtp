@@ -5,7 +5,6 @@ source "$MXTP_ROOT_DIR/lib/gum.sh"
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 source "$MXTP_ROOT_DIR/lib/utils.sh"
 
-
 CMD_DURATION="DURATION"
 CMD_TRIM="TRIM"
 CMD_NORMALIZE="NORMALIZE"
@@ -18,13 +17,6 @@ CASSETTE_LENGTH_60=60
 CASSETTE_LENGTH_90=90
 
 length=
-
-function show_cmds() {
-    local choices
-
-    choices=$(gum choose "$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE" --no-limit --header "Run one or multiple commands")
-    echo "$choices"
-}
 
 function show_lengths() {
     local choices
@@ -78,7 +70,7 @@ if [[ ! -d "$MXTP_USER_ROOT_DIR" ]]; then
 fi
 
 if [[ $CMD == "duration" ]]; then
-    directory=$(select_directory)
+    directory=$(select_mixtape_directory)
 
     if [ -z "$directory" ]; then
         log_fatal "No directory selected"
@@ -87,28 +79,16 @@ if [[ $CMD == "duration" ]]; then
     execute $CMD_DURATION "$directory"
 fi
 
-if [[ $CMD == "tutorial" ]]; then
-    gum pager <"$MXTP_ROOT_DIR/mxtp.txt"
-fi
+if [[ $CMD == "prepare" ]]; then
 
-if [[ $CMD == "menu" ]]; then
-    mapfile -t cmds < <(show_cmds | sed '/^$/d')
+    length=$(show_lengths | sed '/^$/d')
 
-    if contains cmds[@] "$CMD_REORGANIZE"; then
-        length=$(show_lengths | sed '/^$/d')
-
-        if [[ -z "$length" ]]; then
-            log_fatal "No length selected"
-            exit 1
-        fi
+    if [[ -z "$length" ]]; then
+        log_fatal "No length selected"
+        exit 1
     fi
 
-    if [[ ${#cmds[@]} -eq 0 ]]; then
-        log_fatal "No commands selected"
-        exit 0
-    fi
-
-    directory=$(select_directory)
+    directory=$(select_mixtape_directory)
 
     if [ -z "$directory" ]; then
         log_fatal "No directory selected"
@@ -122,20 +102,19 @@ if [[ $CMD == "menu" ]]; then
     fi
 
     gum confirm && {
-        for cmd in "${cmds[@]}"; do
-            execute "$cmd" "$directory" "$length"
-        done
+        execute "$CMD_TRIM" "$directory"
+        execute "$CMD_NORMALIZE" "$directory"
+        execute "$CMD_REORGANIZE" "$directory" "$length"
     } || exit 0
 fi
 
-if [[ "$CMD" != "tutorial" && "$CMD" != "menu" && "$CMD" != "duration" ]]; then
+if [[ "$CMD" != "prepare" && "$CMD" != "duration" ]]; then
     echo
     echo "Usage: mxtp [cmd]"
     echo
     echo "Commands:"
-    echo "  tutorial            Display the full tutorial and usage instructions"
     echo "  duration            Show the total playback duration of your mixtape"
-    echo "  menu                Open an interactive menu to choose commands to run"
+    echo "  prepare             Open an interactive menu to choose commands to run"
     echo
     exit 0
 fi

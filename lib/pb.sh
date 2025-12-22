@@ -2,6 +2,7 @@
 
 PB_TOTAL=0
 PB_WIDTH=50
+
 __PB_START_TIME=0
 
 function pb_init() {
@@ -12,25 +13,25 @@ function pb_init() {
 }
 
 function pb_update() {
-    local current=$1
-    local label=$2
+    local _current=$1
+    local _label=$2
 
     label=${label:0:40}
 
-    local percent=$((current * 100 / PB_TOTAL))
-    local filled=$((percent * PB_WIDTH / 100))
-    local empty=$((PB_WIDTH - filled))
+    local _percent=$((_current * 100 / PB_TOTAL))
+    local _filled=$((_percent * PB_WIDTH / 100))
+    local _empty=$((PB_WIDTH - _filled))
 
     printf "\r\033[2K\033[?25l["
 
-    printf "%0.s█" $(seq 1 $filled)
-    printf "%0.s░" $(seq 1 $empty)
+    printf "%0.s█" $(seq 1 $_filled)
+    printf "%0.s░" $(seq 1 $_empty)
 
-    printf "] %3d%% %s" "$percent" "$label"
+    printf "] %3d%% %s" "$_percent" "$label"
 
     printf "\033[?25h"
 
-    if [[ $current -ge $PB_TOTAL ]]; then
+    if [[ $_current -ge $PB_TOTAL ]]; then
         echo
     fi
 }

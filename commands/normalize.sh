@@ -35,7 +35,7 @@ while IFS= read -r -d '' file; do
 
     if ! $failed; then
         if ! ffmpeg -nostdin -y -i "$tmp_file" \
-            -codec:a libmp3lame -q:a 2 \
+            -codec:a libmp3lame -b:a 320k \
             "$output_file" >/dev/null 2>&1; then
             failed=true
         fi
@@ -55,7 +55,7 @@ while IFS= read -r -d '' file; do
     label="$(basename "$file")"
     label="$(truncate "$label")"
     pb_update "$processed_count" "Normalizing: $label"
-done < <(get_files_ext "$ROOT_DIR" "$EXT")
+done < <(get_files_ext "$ROOT_DIR/mxtp" "$EXT")
 
 echo
 echo "✔ Normalization complete!"

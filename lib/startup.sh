@@ -6,8 +6,9 @@ function check_dependency() {
     case $1 in
     "bash")
         if [[ -z "$BASH_VERSION" ]]; then log_fatal "Not running under Bash"; fi
-        local major_version=${BASH_VERSION%%.*}
-        if ((major_version < 5)); then
+        local _major_version=${BASH_VERSION%%.*}
+        
+        if ((_major_version < 5)); then
             log_fatal "Bash version must be at least 5 (found $BASH_VERSION)"
         fi
         ;;

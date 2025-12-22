@@ -3,12 +3,12 @@
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 
 function get_subdirectories() {
-  local directory="$1"
+  local _directory="$1"
 
-  if [[ -d "$directory" ]]; then
-    find "$directory" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
+  if [[ -d "$_directory" ]]; then
+    find "$_directory" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
   else
-    log_fatal "Parent directory '$directory' doesn't exist"
+    log_fatal "Parent directory '$_directory' doesn't exist"
     return 1
   fi
 }

@@ -16,8 +16,8 @@ if [[ "$3" != "--seconds" ]]; then
 fi
 
 while IFS= read -r -d '' file; do
-    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file")
-    total_seconds=$((total_seconds + ${duration%.*}))
+    seconds=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file" 2>/dev/null)
+    total_seconds=$(echo "$total_seconds + $seconds" | bc)
 
     if [[ "$3" != "--seconds" ]]; then
         ((processed_count++))
@@ -35,4 +35,4 @@ if [[ "$3" == "--seconds" ]]; then
 fi
 
 echo
-echo "✔ Total duration: $(from_seconds_to_duration $total_seconds)"
+echo "✔ Total duration: $(from_seconds_to_duration "$total_seconds")"
