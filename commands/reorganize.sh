@@ -71,6 +71,7 @@ function process_side() {
             new_name=$(printf "B%02d_%s.%s" "$count" "$(basename "$f" .$ext)" "$ext")
         fi
         cp "$f" "$ROOT_DIR/mxtp/$new_name"
+        ((count++))
     done
     echo
 }
