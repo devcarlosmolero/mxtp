@@ -26,10 +26,24 @@ while IFS= read -r -d '' file; do
 
     failed=false
 
-    if ! ffmpeg -nostdin -y -i "$file" \
-        -af "loudnorm=I=-14:TP=-1.5:LRA=11" \
-        -c:a pcm_s16le "$tmp_file" >/dev/null 2>&1; then
+    loudnorm_stats=$(ffmpeg -nostdin -y -i "$file" \
+        -af "loudnorm=I=-14:TP=-2:LRA=11:print_format=json" \
+        -f null - 2>&1)
+
+    if [[ -z "$loudnorm_stats" ]]; then
         failed=true
+    else
+        input_i=$(echo "$loudnorm_stats" | grep '"input_i"' | sed 's/[^0-9.\-]//g')
+        input_tp=$(echo "$loudnorm_stats" | grep '"input_tp"' | sed 's/[^0-9.\-]//g')
+        input_lra=$(echo "$loudnorm_stats" | grep '"input_lra"' | sed 's/[^0-9.\-]//g')
+        input_thresh=$(echo "$loudnorm_stats" | grep '"input_thresh"' | sed 's/[^0-9.\-]//g')
+        offset=$(echo "$loudnorm_stats" | grep '"target_offset"' | sed 's/[^0-9.\-]//g')
+
+        if ! ffmpeg -nostdin -y -i "$file" \
+            -af "loudnorm=I=-14:TP=-2:LRA=11:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
+            -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
+            failed=true
+        fi
     fi
 
     if ! $failed; then

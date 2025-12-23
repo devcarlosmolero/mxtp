@@ -29,7 +29,7 @@ while IFS= read -r -d '' file; do
 
     failed=false
 
-    if ! ffmpeg -nostdin -y -i "$file" -c:a pcm_s16le "$tmp_file" >/dev/null 2>&1; then
+    if ! ffmpeg -nostdin -y -i "$file" -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
         failed=true
     fi
 
