@@ -70,7 +70,7 @@ if [[ ! -d "$MXTP_USER_ROOT_DIR" ]]; then
 fi
 
 if [[ $CMD == "duration" ]]; then
-    directory=$(select_mixtape_directory)
+    directory=$(select_user_root_subdirectory)
 
     if [ -z "$directory" ]; then
         log_fatal "No directory selected"
@@ -88,7 +88,7 @@ if [[ $CMD == "prepare" ]]; then
         exit 1
     fi
 
-    directory=$(select_mixtape_directory)
+    directory=$(select_user_root_subdirectory)
 
     if [ -z "$directory" ]; then
         log_fatal "No directory selected"
@@ -114,7 +114,7 @@ if [[ "$CMD" != "prepare" && "$CMD" != "duration" ]]; then
     echo
     echo "Commands:"
     echo "  duration            Show the total playback duration of your mixtape"
-    echo "  prepare             Open an interactive menu to choose commands to run"
+    echo "  prepare             Run the main process"
     echo
     exit 0
 fi

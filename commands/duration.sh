@@ -24,7 +24,7 @@ while IFS= read -r -d '' file; do
 
         label=$(basename "$file")
         label="$(truncate "$label")"
-        pb_update "$processed_count" "Processing: $label"
+        pb_update "$processed_count" "Measuring: $label"
     fi
 
 done < <(get_files_ext "$ROOT_DIR" "$EXT")

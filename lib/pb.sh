@@ -16,7 +16,7 @@ function pb_update() {
     local _current=$1
     local _label=$2
 
-    _label=${_label:0:40}
+    _label=$(truncate "$_label")
 
     local _percent=$((_current * 100 / PB_TOTAL))
     local _filled=$((_percent * PB_WIDTH / 100))

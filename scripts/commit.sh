@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-diff=$(git diff)
-payload=$(
+DIFF=$(git diff)
+PAYLOAD=$(
     jq -n \
-        --arg diff "$diff" \
+        --arg DIFF "$DIFF" \
         '{
     model: "qwencoder7b-model",
     messages: [
@@ -31,7 +31,7 @@ payload=$(
             "13. Use imperative mood.\n" +
             "14. If ANY rule is violated, rewrite until ALL rules are satisfied.\n\n" +
             "DIFF:\n" +
-            $diff
+            $DIFF
         )
       }
     ]
@@ -45,7 +45,7 @@ response=$(gum spin \
   --title "Generating..." \
   -- curl -s http://localhost:1234/v1/chat/completions \
        -H "Content-Type: application/json" \
-       -d "$payload"
+       -d "$PAYLOAD"
 ) || {
     gum log --structured --level fatal "Failed to execute the cURL command."
     exit 1

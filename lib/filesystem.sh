@@ -2,7 +2,7 @@
 
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 
-function get_subdirectories() {
+function get_user_root_subdirectories() {
   local _directory="$1"
 
   if [[ -d "$_directory" ]]; then

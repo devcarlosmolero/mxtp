@@ -8,7 +8,7 @@
 
 * **Trim**: Remove leading and trailing silence from audio tracks.
 * **Normalize**: Adjust track volumes for consistent playback.
-* **Reorganize**: Distribute tracks between Side A and Side B, optimizing cassette usage and renaming files with side prefixes.
+* **Reorganize**: Distribute tracks between Side A and Side B, optimizing cassette usage, renaming files with side prefixes to preserve a predictable track order across different playback devices, and generating silence tracks to prevent the next track from bleeding into the opposite side when playback reaches the tape end.
 
 ## Installation
 
@@ -20,21 +20,14 @@ brew install devcarlosmolero/homebrew/mxtp
 ## Usage
 
 ```bash
-mxtp tutorial         # Display the full tutorial and usage instructions
 mxtp duration         # Show the total playback duration of your mixtape
-mxtp menu             # Open an interactive menu to choose commands to run
+mxtp prepare          # Run the main process
 ```
-
-**Command order is fixed:** `TRIM → NORMALIZE → REORGANIZE`
 
 * The order of commands is fixed: TRIM → NORMALIZE → REORGANIZE.
 * For safety, original files are cloned by default rather than overwritten.
-
-## Notes
-
-* Works only with audio files in the selected folder (no subdirectories).
+* Processes only MP3 files in the selected folder, excluding subdirectories.
 * Optimizes cassette usage and shows visual track distribution.
-
 
 ## License
 

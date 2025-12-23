@@ -3,8 +3,8 @@
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/consts.sh"
 
-function select_mixtape_directory() {
-    local _directory=$(get_subdirectories "$MXTP_USER_ROOT_DIR" | gum filter)
+function select_user_root_subdirectory() {
+    local _directory=$(get_user_root_subdirectories "$MXTP_USER_ROOT_DIR" | gum filter)
 
     if [[ -z "$_directory" ]]; then
         log_fatal "No directory selected"

@@ -60,7 +60,7 @@ while IFS= read -r -d '' file; do
     ((success_count++))
     ((processed_count++))
 
-    label="${base:0:40}"
+    label=$(truncate "$base")
     pb_update "$processed_count" "Trimming: $label"
 done < <(get_files_ext "$ROOT_DIR" "$EXT")
 
