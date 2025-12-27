@@ -14,6 +14,17 @@ function select_user_root_subdirectory() {
     echo "$_directory"
 }
 
+function select_external_volume() {
+    local _volume=$(get_external_volumes | gum filter)
+
+    if [[ -z "$_volume" ]]; then
+        log_fatal "No volume selected"
+        exit 0
+    fi
+
+    echo "$_volume"
+}
+
 function print_failed_files() {
     local _fail_count="$1"
     local _total="$2"

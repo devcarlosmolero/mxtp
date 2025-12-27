@@ -5,9 +5,8 @@ source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/gum.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
-EXT=$2
 
-TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
+TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR/mxtp" "mp3")
 
 success_count=0
 fail_count=0
@@ -27,7 +26,7 @@ while IFS= read -r -d '' file; do
     failed=false
 
     loudnorm_stats=$(ffmpeg -nostdin -y -i "$file" \
-        -af "loudnorm=I=-14:TP=-2:LRA=11:print_format=json" \
+        -af "loudnorm=I=-14:TP=-3:LRA=10:print_format=json" \
         -f null - 2>&1)
 
     if [[ -z "$loudnorm_stats" ]]; then
@@ -40,7 +39,7 @@ while IFS= read -r -d '' file; do
         offset=$(echo "$loudnorm_stats" | grep '"target_offset"' | sed 's/[^0-9.\-]//g')
 
         if ! ffmpeg -nostdin -y -i "$file" \
-            -af "loudnorm=I=-14:TP=-2:LRA=11:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
+            -af "loudnorm=I=-14:TP=-3:LRA=10:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
             -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
             failed=true
         fi
@@ -68,7 +67,7 @@ while IFS= read -r -d '' file; do
     label="$(basename "$file")"
     label="$(truncate "$label")"
     pb_update "$processed_count" "Normalizing: $label"
-done < <(get_files_ext "$ROOT_DIR/mxtp" "$EXT")
+done < <(get_files_ext "$ROOT_DIR/mxtp" "mp3")
 
 echo
 echo "✔ Normalization complete!"

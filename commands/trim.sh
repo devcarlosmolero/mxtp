@@ -6,9 +6,8 @@ source "$MXTP_ROOT_DIR/lib/gum.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
-EXT=$2
 
-TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
+TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 
 success_count=0
 fail_count=0
@@ -62,7 +61,7 @@ while IFS= read -r -d '' file; do
 
     label=$(truncate "$base")
     pb_update "$processed_count" "Trimming: $label"
-done < <(get_files_ext "$ROOT_DIR" "$EXT")
+done < <(get_files_ext "$ROOT_DIR" "mp3")
 
 after_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1/mxtp" "mp3" "--seconds")
 

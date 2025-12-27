@@ -5,8 +5,8 @@ source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
-EXT="$2"
-TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "$EXT")
+
+TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 
 total_seconds=0
 processed_count=0
@@ -27,7 +27,7 @@ while IFS= read -r -d '' file; do
         pb_update "$processed_count" "Measuring: $label"
     fi
 
-done < <(get_files_ext "$ROOT_DIR" "$EXT")
+done < <(get_files_ext "$ROOT_DIR" "mp3")
 
 if [[ "$3" == "--seconds" ]]; then
     echo "$total_seconds"

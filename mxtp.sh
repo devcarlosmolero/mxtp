@@ -9,6 +9,7 @@ CMD_DURATION="DURATION"
 CMD_TRIM="TRIM"
 CMD_NORMALIZE="NORMALIZE"
 CMD_REORGANIZE="REORGANIZE"
+CMD_MOVE="MOVE"
 
 CMD=$1
 
@@ -19,25 +20,28 @@ CASSETTE_LENGTH_90=90
 length=
 
 function show_lengths() {
-    local choices
+    local _choice
 
-    choices=$(gum choose "$CASSETTE_LENGTH_46" "$CASSETTE_LENGTH_60" "$CASSETTE_LENGTH_90" --header "Select the length of your cassette")
-    echo "$choices"
+    _choice=$(gum choose "$CASSETTE_LENGTH_46" "$CASSETTE_LENGTH_60" "$CASSETTE_LENGTH_90" --header "Select the length of your cassette")
+    echo "$_choice"
 }
 
 function execute() {
     case $1 in
     "$CMD_DURATION")
-        source "$MXTP_ROOT_DIR/commands/duration.sh" $2 "mp3" $3
+        source "$MXTP_ROOT_DIR/commands/duration.sh" $2
         ;;
     "$CMD_TRIM")
-        source "$MXTP_ROOT_DIR/commands/trim.sh" $2 "mp3" $3
+        source "$MXTP_ROOT_DIR/commands/trim.sh" $2
         ;;
     "$CMD_NORMALIZE")
-        source "$MXTP_ROOT_DIR/commands/normalize.sh" $2 "mp3" $3
+        source "$MXTP_ROOT_DIR/commands/normalize.sh" $2
         ;;
     "$CMD_REORGANIZE")
-        source "$MXTP_ROOT_DIR/commands/reorganize.sh" $2 "mp3" $3
+        source "$MXTP_ROOT_DIR/commands/reorganize.sh" $2 $3
+        ;;
+    "$CMD_MOVE")
+        source "$MXTP_ROOT_DIR/commands/move.sh" $2 $3
         ;;
     esac
 }
@@ -101,10 +105,14 @@ if [[ $CMD == "prepare" ]]; then
         mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
     fi
 
-    gum confirm && {
-        execute "$CMD_TRIM" "$directory"
-        execute "$CMD_NORMALIZE" "$directory"
-        execute "$CMD_REORGANIZE" "$directory" "$length"
+    execute "$CMD_TRIM" "$directory"
+    execute "$CMD_NORMALIZE" "$directory"
+    execute "$CMD_REORGANIZE" "$directory" "$length"
+
+    echo
+    gum confirm "Would you like to copy the files sequentially into your volume to ensure the playback order is respected on your device?" && {
+        volume=$(select_external_volume)
+        execute "$CMD_MOVE" "$directory" "$volume"
     } || exit 0
 fi
 

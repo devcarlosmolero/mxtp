@@ -5,8 +5,7 @@ source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
 ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
-EXT=$2
-CASSETTE_MINUTES=$3
+CASSETTE_MINUTES=$2
 
 SIDE_SECONDS=$(((CASSETTE_MINUTES * 60) / 2))
 MARGIN=120 # 2 minutes
@@ -26,7 +25,7 @@ while IFS= read -r -d '' file; do
     dur=${dur:-0}
     durations+=("$dur")
     total_seconds=$(echo "$total_seconds + $dur" | bc)
-done < <(get_files_ext "$ROOT_DIR/mxtp" "$EXT")
+done < <(get_files_ext "$ROOT_DIR/mxtp" "mp3")
 
 if (($(echo "$total_seconds + 2*$MARGIN > $cassette_total_seconds" | bc -l))); then
     log_fatal "Total duration ($(from_seconds_to_duration "$total_seconds")) exceeds cassette limit of $CASSETTE_MINUTES min"
