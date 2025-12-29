@@ -6,9 +6,11 @@
 
 ## Features
 
-* **Trim**: Remove leading and trailing silence from audio tracks.
-* **Normalize**: Adjust track volumes for consistent playback.
-* **Reorganize**: Distribute tracks between Side A and Side B, optimizing cassette usage, renaming files with side prefixes to preserve a predictable track order across different playback devices, and generating silence tracks to prevent the next track from bleeding into the opposite side when playback reaches the tape end.
+- **Trim**: Remove leading and trailing silence from audio tracks.
+- **Normalize**: Adjust track volumes for consistent playback.
+- **Reorganize**: Distribute tracks between Side A and Side B, optimizing cassette usage, renaming files with side prefixes to preserve a predictable track order across different playback devices, and generating silence tracks to prevent the next track from bleeding into the opposite side when playback reaches the tape end.
+
+![Demo](./demo.mp4)
 
 ## Installation
 
@@ -24,10 +26,10 @@ mxtp duration         # Show the total playback duration of your mixtape
 mxtp prepare          # Run the main process
 ```
 
-* The order of commands is fixed: TRIM → NORMALIZE → REORGANIZE.
-* For safety, original files are cloned by default rather than overwritten.
-* Processes only MP3 files in the selected folder, excluding subdirectories.
-* Optimizes cassette usage and shows visual track distribution.
+- The order of commands is fixed: TRIM → NORMALIZE → REORGANIZE.
+- For safety, original files are cloned by default rather than overwritten.
+- Processes only MP3 files in the selected folder, excluding subdirectories.
+- Optimizes cassette usage and shows visual track distribution.
 
 ## License
 
