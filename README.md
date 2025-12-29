@@ -10,7 +10,7 @@
 - **Normalize**: Adjust track volumes for consistent playback.
 - **Reorganize**: Distribute tracks between Side A and Side B, optimizing cassette usage, renaming files with side prefixes to preserve a predictable track order across different playback devices, and generating silence tracks to prevent the next track from bleeding into the opposite side when playback reaches the tape end.
 
-![Demo](./demo.mp4)
+![Demo](./demo.gif)
 
 ## Installation
 
