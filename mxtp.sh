@@ -83,7 +83,7 @@ fi
 if [[ $CMD == "prepare" ]]; then
   shift
 
-  while getopts "c:l:f:m" opt; do
+  while getopts "c:l:f:m:" opt; do
     case "$opt" in
     c)
       IFS=',' read -r -a commands_opts <<<"$OPTARG"
@@ -116,17 +116,14 @@ if [[ $CMD == "prepare" ]]; then
   fi
 
   execute "$CMD_TRIM" "$directory"
-  execute "$CMD_NORMALIZE" "$directory"
-  execute "$CMD_REORGANIZE" "$directory" "$length"
+  execute "$CMD_NORMALIZE" "$directory" "$ffmpeg_opts"
+  execute "$CMD_REORGANIZE" "$directory" "$cassette_length_opts"
 
   echo
-  gum confirm "Would you like to copy the files sequentially into your volume to ensure the playback order is respected on your device?" && {
-    volume=$(select_external_volume)
-    execute "$CMD_MOVE" "$directory" "$volume"
-  } || exit 0
+  execute "$CMD_MOVE" "$directory" "$move_opts"
 fi
 
-if [[ "$CMD" != "prepare" && "$CMD" != "duration" ]]; then
+if [[ "$CMD" != "prepare" && "$CMD" != "duration" && "$CMD" != "help" ]]; then
   print_help
   exit 0
 fi

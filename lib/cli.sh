@@ -73,11 +73,20 @@ function validate_prepare_flags() {
       log_fatal "Cassette length is required when 'reorganize' command is used."
     fi
 
-    case "$_cassette_length_opts" in
-    46 | 60 | 90) ;;
-    *)
+    _is_valid=false
+    for length in "${CASSETTE_LENGTHS[@]}"; do
+      if [[ "$_cassette_length_opts" == "$length" ]]; then
+        _is_valid=true
+        break
+      fi
+    done
+
+    if [[ "$_is_valid" != true ]]; then
       log_fatal "Invalid cassette length '$_cassette_length_opts'. Must be 46, 60, or 90."
-      ;;
-    esac
+    fi
+  fi
+
+  if [[ -n "$_move_opts" && ! -d "$_move_opts" ]]; then
+    log_fatal "Move directory '$_move_opts' does not exist or is not a directory."
   fi
 }
