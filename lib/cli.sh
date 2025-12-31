@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source "$MXTP_ROOT_DIR/lib/consts.sh"
+source "$MXTP_ROOT_DIR/lib/logger.sh"
 
 function print_help() {
   echo
@@ -69,6 +70,18 @@ function validate_prepare_flags() {
   local _is_valid=false
   local _requires_cassette_length=false
 
+  if [[ -z "$_input_opts" || -z "$_output_opts" ]]; then
+    log_fatal "Input (-i) and output (-o) flags are required."
+  fi
+
+  if [[ -n "$_input_opts" && ! -d "$_input_opts" ]]; then
+    log_fatal "Input directory '$_input_opts' does not exist or is not a directory."
+  fi
+
+  if [[ -n "$_output_opts" && ! -d "$_output_opts" ]]; then
+    log_fatal "Output directory '$_output_opts' does not exist or is not a directory."
+  fi
+
   for cmd in "${_commands_opts[@]}"; do
     _is_valid=false
     for valid_cmd in "${_valid_commands[@]}"; do
@@ -88,7 +101,7 @@ function validate_prepare_flags() {
 
   if [[ "$_requires_cassette_length" == true ]]; then
     if [[ -z "$_cassette_length_opts" ]]; then
-      log_fatal "Cassette length is required when 'reorganize' command is used."
+      log_fatal "Cassette length (-l) is required when 'reorganize' command is used."
     fi
 
     _is_valid=false

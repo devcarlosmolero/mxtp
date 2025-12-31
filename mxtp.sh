@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 source "$MXTP_ROOT_DIR/lib/startup.sh"
-source "$MXTP_ROOT_DIR/lib/gum.sh"
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/consts.sh"
