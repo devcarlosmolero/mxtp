@@ -27,8 +27,6 @@ brew install devcarlosmolero/homebrew/mxtp
 mxtp duration         # Show the total playback duration of your mixtape
 mxtp help             # Show the available commands and flags
 mxtp prepare          # Run the main process
-
-mxtp -c trim,normalize -c -14 10 -3 -m
 ```
 
 - The order of commands is fixed: TRIM → NORMALIZE → REORGANIZE.

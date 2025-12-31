@@ -6,11 +6,13 @@ source "$MXTP_ROOT_DIR/lib/logger.sh"
 source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/consts.sh"
 
-CMD=$1
+CHOICE=$1
 
+input_opts=
 commands_opts=
 cassette_length_opts=
 ffmpeg_opts=
+output_opts=
 move_opts=
 
 function execute() {
@@ -52,15 +54,7 @@ check_dependency "bash"
 check_dependency "ffmpeg"
 check_dependency "auto-editor"
 
-if [[ -z "$MXTP_USER_ROOT_DIR" ]]; then
-  log_fatal "MXTP_USER_ROOT_DIR must be set to the parent folder containing your mixtape subfolders (add to ~/.bashrc or ~/.zshrc)."
-fi
-
-if [[ ! -d "$MXTP_USER_ROOT_DIR" ]]; then
-  log_fatal "MXTP_USER_ROOT_DIR ('$MXTP_USER_ROOT_DIR') does not exist or is not a directory."
-fi
-
-if [[ $CMD == "help" ]]; then
+if [[ $CHOICE == "help" ]]; then
   if [[ "$2" == "prepare" ]]; then
     print_prepare_help
     exit 0
@@ -70,21 +64,18 @@ if [[ $CMD == "help" ]]; then
   exit 0
 fi
 
-if [[ $CMD == "duration" ]]; then
-  directory=$(select_user_root_subdirectory)
-
-  if [ -z "$directory" ]; then
-    log_fatal "No directory selected"
-  fi
-
+if [[ $CHOICE == "duration" ]]; then
   execute $CMD_DURATION "$directory"
 fi
 
-if [[ $CMD == "prepare" ]]; then
+if [[ $CHOICE == "prepare" ]]; then
   shift
 
-  while getopts "c:l:f:m:" opt; do
+  while getopts "i:c:l:f:o:m:" opt; do
     case "$opt" in
+    i)
+      input_opts="$OPTARG"
+      ;;
     c)
       IFS=',' read -r -a commands_opts <<<"$OPTARG"
       ;;
@@ -94,6 +85,9 @@ if [[ $CMD == "prepare" ]]; then
     f)
       ffmpeg_opts="$OPTARG"
       ;;
+    o)
+      output_opts="$OPTARG"
+      ;;
     m)
       move_opts="$OPTARG"
       ;;
@@ -101,12 +95,6 @@ if [[ $CMD == "prepare" ]]; then
   done
 
   validate_prepare_flags commands_opts "$cassette_length_opts" "$ffmpeg_opts" "$move_opts"
-
-  directory=$(select_user_root_subdirectory)
-
-  if [ -z "$directory" ]; then
-    log_fatal "No directory selected"
-  fi
 
   if [ ! -d "$MXTP_USER_ROOT_DIR/$directory/mxtp" ]; then
     mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
@@ -123,7 +111,7 @@ if [[ $CMD == "prepare" ]]; then
   execute "$CMD_MOVE" "$directory" "$move_opts"
 fi
 
-if [[ "$CMD" != "prepare" && "$CMD" != "duration" && "$CMD" != "help" ]]; then
+if [[ "$CHOICE" != "prepare" && "$CHOICE" != "duration" && "$CHOICE" != "help" ]]; then
   print_help
   exit 0
 fi

@@ -2,10 +2,10 @@
 
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
-source "$MXTP_ROOT_DIR/lib/gum.sh"
+source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
-ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
+ROOT_DIR="$1"
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 

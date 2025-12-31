@@ -41,11 +41,29 @@ function print_prepare_help() {
   echo
 }
 
+function print_failed_files() {
+  local _fail_count="$1"
+  local _total="$2"
+  shift 2
+
+  if ((_fail_count == 0)); then
+    return 0
+  fi
+
+  echo
+  echo "Failed files:"
+  for file in "$@"; do
+    echo -e "$RED  • $file $RESET"
+  done
+}
+
 function validate_prepare_flags() {
-  local -n _commands_opts=$1
-  local _cassette_length_opts=$2
-  local _ffmpeg_opts=$3
-  local _move_opts=$4
+  local _input_opts=$1
+  local -n _commands_opts=$2
+  local _cassette_length_opts=$3
+  local _ffmpeg_opts=$4
+  local _output_opts=$5
+  local _move_opts=$6
 
   local _valid_commands=("$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE")
   local _is_valid=false

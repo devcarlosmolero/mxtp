@@ -2,9 +2,9 @@
 
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
-source "$MXTP_ROOT_DIR/lib/gum.sh"
+source "$MXTP_ROOT_DIR/lib/cli.sh"
 
-ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
+ROOT_DIR="$1"
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR/mxtp" "mp3")
 
@@ -17,56 +17,56 @@ failed_files=()
 pb_init "$TOTAL_FILES" 30
 
 while IFS= read -r -d '' file; do
-    base="$(basename "$file")"
-    name="${base%.*}"
+  base="$(basename "$file")"
+  name="${base%.*}"
 
-    tmp_file="$ROOT_DIR/mxtp/$name.tmp.wav"
-    output_file="$ROOT_DIR/mxtp/$base"
+  tmp_file="$ROOT_DIR/mxtp/$name.tmp.wav"
+  output_file="$ROOT_DIR/mxtp/$base"
 
-    failed=false
+  failed=false
 
-    loudnorm_stats=$(ffmpeg -nostdin -y -i "$file" \
-        -af "loudnorm=I=-14:TP=-3:LRA=10:print_format=json" \
-        -f null - 2>&1)
+  loudnorm_stats=$(ffmpeg -nostdin -y -i "$file" \
+    -af "loudnorm=I=-14:TP=-3:LRA=10:print_format=json" \
+    -f null - 2>&1)
 
-    if [[ -z "$loudnorm_stats" ]]; then
-        failed=true
-    else
-        input_i=$(echo "$loudnorm_stats" | grep '"input_i"' | sed 's/[^0-9.\-]//g')
-        input_tp=$(echo "$loudnorm_stats" | grep '"input_tp"' | sed 's/[^0-9.\-]//g')
-        input_lra=$(echo "$loudnorm_stats" | grep '"input_lra"' | sed 's/[^0-9.\-]//g')
-        input_thresh=$(echo "$loudnorm_stats" | grep '"input_thresh"' | sed 's/[^0-9.\-]//g')
-        offset=$(echo "$loudnorm_stats" | grep '"target_offset"' | sed 's/[^0-9.\-]//g')
+  if [[ -z "$loudnorm_stats" ]]; then
+    failed=true
+  else
+    input_i=$(echo "$loudnorm_stats" | grep '"input_i"' | sed 's/[^0-9.\-]//g')
+    input_tp=$(echo "$loudnorm_stats" | grep '"input_tp"' | sed 's/[^0-9.\-]//g')
+    input_lra=$(echo "$loudnorm_stats" | grep '"input_lra"' | sed 's/[^0-9.\-]//g')
+    input_thresh=$(echo "$loudnorm_stats" | grep '"input_thresh"' | sed 's/[^0-9.\-]//g')
+    offset=$(echo "$loudnorm_stats" | grep '"target_offset"' | sed 's/[^0-9.\-]//g')
 
-        if ! ffmpeg -nostdin -y -i "$file" \
-            -af "loudnorm=I=-14:TP=-3:LRA=10:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
-            -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
-            failed=true
-        fi
+    if ! ffmpeg -nostdin -y -i "$file" \
+      -af "loudnorm=I=-14:TP=-3:LRA=10:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
+      -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
+      failed=true
     fi
+  fi
 
-    if ! $failed; then
-        if ! ffmpeg -nostdin -y -i "$tmp_file" \
-            -codec:a libmp3lame -b:a 320k \
-            "$output_file" >/dev/null 2>&1; then
-            failed=true
-        fi
+  if ! $failed; then
+    if ! ffmpeg -nostdin -y -i "$tmp_file" \
+      -codec:a libmp3lame -b:a 320k \
+      "$output_file" >/dev/null 2>&1; then
+      failed=true
     fi
+  fi
 
-    if $failed; then
-        rm -f "$tmp_file"
-        ((fail_count++))
-        failed_files+=("$(basename "$file")")
-        continue
-    fi
-
+  if $failed; then
     rm -f "$tmp_file"
-    ((success_count++))
-    ((processed_count++))
+    ((fail_count++))
+    failed_files+=("$(basename "$file")")
+    continue
+  fi
 
-    label="$(basename "$file")"
-    label="$(truncate "$label")"
-    pb_update "$processed_count" "Normalizing: $label"
+  rm -f "$tmp_file"
+  ((success_count++))
+  ((processed_count++))
+
+  label="$(basename "$file")"
+  label="$(truncate "$label")"
+  pb_update "$processed_count" "Normalizing: $label"
 done < <(get_files_ext "$ROOT_DIR/mxtp" "mp3")
 
 echo
