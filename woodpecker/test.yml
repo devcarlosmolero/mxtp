@@ -1,0 +1,10 @@
+when:
+  branch: master
+  event: push
+
+steps:
+  - name: test
+    image: alpine:latest
+    commands:
+      - apk add --no-cache bash git
+      - bash lib/bashunit tests/
