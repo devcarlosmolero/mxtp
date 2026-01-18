@@ -17,19 +17,19 @@ move_opts=
 function execute() {
   case $1 in
   "$CMD_DURATION")
-    source "$MXTP_ROOT_DIR/commands/duration.sh" $2
+    bash "$MXTP_ROOT_DIR/commands/duration.sh $HOME"
     ;;
   "$CMD_TRIM")
-    source "$MXTP_ROOT_DIR/commands/trim.sh" $2
+    bash "$MXTP_ROOT_DIR/commands/trim.sh $2"
     ;;
   "$CMD_NORMALIZE")
-    source "$MXTP_ROOT_DIR/commands/normalize.sh" $2
+    bash "$MXTP_ROOT_DIR/commands/normalize.sh $2"
     ;;
   "$CMD_REORGANIZE")
-    source "$MXTP_ROOT_DIR/commands/reorganize.sh" $2 $3
+    bash "$MXTP_ROOT_DIR/commands/reorganize.sh $2 $3"
     ;;
   "$CMD_MOVE")
-    source "$MXTP_ROOT_DIR/commands/move.sh" $2 $3
+    bash "$MXTP_ROOT_DIR/commands/move.sh $2 $3"
     ;;
   esac
 }
@@ -63,10 +63,6 @@ if [[ $CHOICE == "help" ]]; then
   exit 0
 fi
 
-if [[ $CHOICE == "duration" ]]; then
-  execute $CMD_DURATION "$directory"
-fi
-
 if [[ $CHOICE == "prepare" ]]; then
   shift
 
@@ -93,24 +89,14 @@ if [[ $CHOICE == "prepare" ]]; then
     esac
   done
 
-  validate_prepare_flags commands_opts "$cassette_length_opts" "$ffmpeg_opts" "$move_opts"
+  validate_prepare_flags "$input_opts" commands_opts "$cassette_length_opts" "$ffmpeg_opts" "$output_opts" "$move_opts"
 
-  if [ ! -d "$MXTP_USER_ROOT_DIR/$directory/mxtp" ]; then
-    mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
-  else
-    rm -rf "$MXTP_USER_ROOT_DIR/$directory/mxtp"
-    mkdir -p "$MXTP_USER_ROOT_DIR/$directory/mxtp"
-  fi
-
-  execute "$CMD_TRIM" "$directory"
-  execute "$CMD_NORMALIZE" "$directory" "$ffmpeg_opts"
-  execute "$CMD_REORGANIZE" "$directory" "$cassette_length_opts"
-
-  echo
-  execute "$CMD_MOVE" "$directory" "$move_opts"
+  for cmd in "${commands_opts[@]}"; do
+    execute "$cmd"
+  done
 fi
 
-if [[ "$CHOICE" != "prepare" && "$CHOICE" != "duration" && "$CHOICE" != "help" ]]; then
+if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" ]]; then
   print_help
   exit 0
 fi

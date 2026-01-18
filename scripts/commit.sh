@@ -2,10 +2,10 @@
 
 DIFF=$(git diff)
 PAYLOAD=$(
-    jq -n \
-        --arg DIFF "$DIFF" \
-        '{
-    model: "qwencoder7b-model",
+  jq -n \
+    --arg DIFF "$DIFF" \
+    '{
+    model: "qwen2.5-coder-7b-instruct",
     messages: [
       {
         role: "user",
@@ -38,28 +38,29 @@ PAYLOAD=$(
   }'
 )
 
-echo 
+echo
 
-response=$(gum spin \
-  --spinner line \
-  --title "Generating..." \
-  -- curl -s http://localhost:1234/v1/chat/completions \
-       -H "Content-Type: application/json" \
-       -d "$PAYLOAD"
+response=$(
+  gum spin \
+    --spinner line \
+    --title "Generating..." \
+    -- curl -s http://localhost:1234/v1/chat/completions \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD"
 ) || {
-    gum log --structured --level fatal "Failed to execute the cURL command."
-    exit 1
+  gum log --structured --level fatal "Failed to execute the cURL command."
+  exit 1
 }
 
 message=$(echo "$response" | jq -r '.choices[0].message.content')
 
-echo 
+echo
 echo "$message"
-echo 
+echo
 
 gum confirm "Apply commit?" && {
-    git add .
-    git commit -m "$message"
+  git add .
+  git commit -m "$message"
 } || {
-    exit 0
+  exit 0
 }

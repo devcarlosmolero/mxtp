@@ -66,45 +66,57 @@ function validate_prepare_flags() {
   local _output_opts=$5
   local _move_opts=$6
 
-  local _valid_commands=("$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE")
-  local _is_valid=false
   local _requires_cassette_length=false
+  local _requires_output=false
 
-  if [[ -z "$_input_opts" || -z "$_output_opts" ]]; then
-    log_fatal "Input (-i) and output (-o) flags are required."
+  if [[ -z "$_input_opts" ]]; then
+    log_fatal "Input (-i) flag is required."
   fi
 
   if [[ -n "$_input_opts" && ! -d "$_input_opts" ]]; then
     log_fatal "Input directory '$_input_opts' does not exist or is not a directory."
   fi
 
-  if [[ -n "$_output_opts" && ! -d "$_output_opts" ]]; then
-    log_fatal "Output directory '$_output_opts' does not exist or is not a directory."
-  fi
-
   for cmd in "${_commands_opts[@]}"; do
-    _is_valid=false
+    local _is_valid=false
+    local _valid_commands=("$CMD_DURATION" "$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE")
+    
     for valid_cmd in "${_valid_commands[@]}"; do
       if [[ "$cmd" == "$valid_cmd" ]]; then
         _is_valid=true
+        
         if [[ "$cmd" == "$CMD_REORGANIZE" ]]; then
           _requires_cassette_length=true
+          _requires_output=true
+        elif [[ "$cmd" == "$CMD_TRIM" || "$cmd" == "$CMD_NORMALIZE" ]]; then
+          _requires_output=true
         fi
+        
         break
       fi
     done
-
+    
     if [[ "$_is_valid" != true ]]; then
       log_fatal "Unrecognized command '$cmd'"
     fi
   done
+
+  if [[ "$_requires_output" == true ]]; then
+    if [[ -z "$_output_opts" ]]; then
+      log_fatal "Output (-o) flag is required when using trim, normalize, or reorganize commands."
+    fi
+    
+    if [[ ! -d "$_output_opts" ]]; then
+      log_fatal "Output directory '$_output_opts' does not exist or is not a directory."
+    fi
+  fi
 
   if [[ "$_requires_cassette_length" == true ]]; then
     if [[ -z "$_cassette_length_opts" ]]; then
       log_fatal "Cassette length (-l) is required when 'reorganize' command is used."
     fi
 
-    _is_valid=false
+    local _is_valid=false
     for length in "${CASSETTE_LENGTHS[@]}"; do
       if [[ "$_cassette_length_opts" == "$length" ]]; then
         _is_valid=true
