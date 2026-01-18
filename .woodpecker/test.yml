@@ -9,4 +9,6 @@ steps:
       MXTP_ROOT_DIR: /workspace
     commands:
       - apk add --no-cache bash git
+      - echo "MXTP_ROOT_DIR=$MXTP_ROOT_DIR"
+      - echo "PWD=$(pwd)"
       - bash lib/bashunit tests/
