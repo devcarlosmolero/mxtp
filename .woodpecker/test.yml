@@ -5,10 +5,8 @@ when:
 steps:
   - name: test
     image: alpine:latest
+    environment:
+      MXTP_ROOT_DIR: /workspace
     commands:
       - apk add --no-cache bash git
-      - echo "Current directory: $(pwd)"
-      - echo "MXTP_ROOT_DIR will be set to: $(pwd)"
-      - export MXTP_ROOT_DIR=$(pwd)
-      - echo "MXTP_ROOT_DIR is now: $MXTP_ROOT_DIR"
       - bash lib/bashunit tests/
