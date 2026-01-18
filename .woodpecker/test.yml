@@ -6,9 +6,7 @@ steps:
   - name: test
     image: alpine:latest
     environment:
-      MXTP_ROOT_DIR: /workspace
+      MXTP_ROOT_DIR: ${CI_WORKSPACE}
     commands:
       - apk add --no-cache bash git
-      - echo "MXTP_ROOT_DIR=$MXTP_ROOT_DIR"
-      - echo "PWD=$(pwd)"
       - bash lib/bashunit tests/
