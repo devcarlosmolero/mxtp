@@ -17,7 +17,7 @@ move_opts=
 function execute() {
   case $1 in
   "$CMD_DURATION")
-    bash "$MXTP_ROOT_DIR/commands/duration.sh $HOME"
+    bash "$MXTP_ROOT_DIR/commands/duration.sh" "$input_opts"
     ;;
   "$CMD_TRIM")
     bash "$MXTP_ROOT_DIR/commands/trim.sh $2"
@@ -63,6 +63,12 @@ if [[ $CHOICE == "help" ]]; then
   exit 0
 fi
 
+if [[ $CHOICE == "duration" ]]; then
+  input_opts="$2"
+  bash "$MXTP_ROOT_DIR/commands/duration.sh" "$input_opts"
+  exit 0
+fi
+
 if [[ $CHOICE == "prepare" ]]; then
   shift
 
@@ -96,7 +102,7 @@ if [[ $CHOICE == "prepare" ]]; then
   done
 fi
 
-if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" ]]; then
+if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" && "$CHOICE" != "duration" ]]; then
   print_help
   exit 0
 fi

@@ -4,7 +4,7 @@ source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
-ROOT_DIR="$MXTP_USER_ROOT_DIR/$1"
+ROOT_DIR="$1"
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 
@@ -20,7 +20,7 @@ while getopts ":s" opt; do
   esac
 done
 
-if [[ is_only_seconds ]]; then
+if [[ "$is_only_seconds" == true ]]; then
   pb_init "$TOTAL_FILES" 30
 fi
 
@@ -28,7 +28,7 @@ while IFS= read -r -d '' file; do
   seconds=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file" 2>/dev/null)
   total_seconds=$(echo "$total_seconds + $seconds" | bc)
 
-  if [[ is_only_seconds ]]; then
+  if [[ "$is_only_seconds" == true ]]; then
     ((processed_count++))
 
     label=$(basename "$file")
@@ -38,7 +38,7 @@ while IFS= read -r -d '' file; do
 
 done < <(get_files_ext "$ROOT_DIR" "mp3")
 
-if [[ is_only_seconds ]]; then
+if [[ "$is_only_seconds" == true ]]; then
   echo "$total_seconds"
   exit 0
 fi
