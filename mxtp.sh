@@ -20,34 +20,19 @@ function execute() {
     bash "$MXTP_ROOT_DIR/commands/duration.sh" "$input_opts"
     ;;
   "$CMD_TRIM")
-    bash "$MXTP_ROOT_DIR/commands/trim.sh $2"
+    bash "$MXTP_ROOT_DIR/commands/trim.sh" "$input_opts"
     ;;
   "$CMD_NORMALIZE")
-    bash "$MXTP_ROOT_DIR/commands/normalize.sh $2"
+    bash "$MXTP_ROOT_DIR/commands/normalize.sh" "$input_opts"
     ;;
   "$CMD_REORGANIZE")
-    bash "$MXTP_ROOT_DIR/commands/reorganize.sh $2 $3"
+    bash "$MXTP_ROOT_DIR/commands/reorganize.sh" "$input_opts" "$cassette_length_opts"
     ;;
   "$CMD_MOVE")
-    bash "$MXTP_ROOT_DIR/commands/move.sh $2 $3"
+    bash "$MXTP_ROOT_DIR/commands/move.sh" "$input_opts"
     ;;
   esac
 }
-
-printf '%b\n' \
-  "\e[38;5;240m   ____________________________
- /|............................|
-| |:\e[38;5;250m           MXTP           \e[38;5;240m:|  \033[0mGive music value again by recording and owning
-| |:\e[38;5;250m     Mixtape CLI Tools    \e[38;5;240m:|  \033[0myour own cassette collection.
-| |:\e[38;5;250m     ,-.   _____   ,-.    \e[38;5;240m:|   
-| |:\e[38;5;33m    ( \`)) \e[38;5;250m[_____] \e[38;5;33m( \`))   \e[38;5;240m:| 
-|v|:\e[38;5;33m     \`-\`   \e[38;5;250m' ' '   \e[38;5;33m\`-\`    \e[38;5;240m:|
-|||:\e[38;5;51m     ,______________.     \e[38;5;240m:|
-|||.....\e[38;5;51m/::::o::::::o::::\\\.....|  \e[38;5;250mProudly coded by Carlos Molero.
-|^|....\e[38;5;51m/:::O::::::::::O:::\\\....|  \e[38;5;250mLinkedIn: /in/carlosmolero • Fediverse: @iscarlosmolero
-|/\`---/--------------------\`---|
-\`.___/ /====/ /=//=/ /====/____/
-     \`--------------------'\e[0m"
 
 check_dependency "bash"
 check_dependency "ffmpeg"
@@ -60,12 +45,6 @@ if [[ $CHOICE == "help" ]]; then
   fi
 
   print_help
-  exit 0
-fi
-
-if [[ $CHOICE == "duration" ]]; then
-  input_opts="$2"
-  bash "$MXTP_ROOT_DIR/commands/duration.sh" "$input_opts"
   exit 0
 fi
 
@@ -97,12 +76,16 @@ if [[ $CHOICE == "prepare" ]]; then
 
   validate_prepare_flags "$input_opts" commands_opts "$cassette_length_opts" "$ffmpeg_opts" "$output_opts" "$move_opts"
 
+  if [[ " ${commands_opts[@]} " =~ "$CMD_TRIM" || " ${commands_opts[@]} " =~ "$CMD_NORMALIZE" || " ${commands_opts[@]} " =~ "$CMD_REORGANIZE" ]]; then
+    rm -rf "$input_opts/$CHILD_DIR_NAME"
+  fi
+
   for cmd in "${commands_opts[@]}"; do
     execute "$cmd"
   done
 fi
 
-if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" && "$CHOICE" != "duration" ]]; then
+if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" ]]; then
   print_help
   exit 0
 fi

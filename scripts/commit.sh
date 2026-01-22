@@ -5,7 +5,7 @@ PAYLOAD=$(
   jq -n \
     --arg DIFF "$DIFF" \
     '{
-    model: "qwen2.5-coder-7b-instruct",
+    model: "PLACEHOLDER",
     messages: [
       {
         role: "user",

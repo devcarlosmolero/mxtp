@@ -3,10 +3,20 @@
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/cli.sh"
+source "$MXTP_ROOT_DIR/lib/consts.sh"
+source "$MXTP_ROOT_DIR/lib/format.sh"
 
-ROOT_DIR="$1"
+ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
+FFMPEG_OPTS="$2"
 
-TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR/mxtp" "mp3")
+output_dir="$ROOT_DIR"
+
+if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
+  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
+fi
+
+TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 
 success_count=0
 fail_count=0
@@ -20,8 +30,8 @@ while IFS= read -r -d '' file; do
   base="$(basename "$file")"
   name="${base%.*}"
 
-  tmp_file="$ROOT_DIR/mxtp/$name.tmp.wav"
-  output_file="$ROOT_DIR/mxtp/$base"
+  tmp_file="$output_dir/$name.tmp.wav"
+  output_file="$output_dir/$base"
 
   failed=false
 
@@ -56,7 +66,7 @@ while IFS= read -r -d '' file; do
   if $failed; then
     rm -f "$tmp_file"
     ((fail_count++))
-    failed_files+=("$(basename "$file")")
+    failed_files+=("$base")
     continue
   fi
 
@@ -64,10 +74,9 @@ while IFS= read -r -d '' file; do
   ((success_count++))
   ((processed_count++))
 
-  label="$(basename "$file")"
-  label="$(truncate "$label")"
+  label=$(truncate "$base")
   pb_update "$processed_count" "Normalizing: $label"
-done < <(get_files_ext "$ROOT_DIR/mxtp" "mp3")
+done < <(get_files_ext "$ROOT_DIR" "mp3")
 
 echo
 echo "✔ Normalization complete!"

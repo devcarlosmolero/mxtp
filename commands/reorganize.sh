@@ -3,9 +3,20 @@
 source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
+source "$MXTP_ROOT_DIR/lib/logger.sh"
+source "$MXTP_ROOT_DIR/lib/consts.sh"
 
-ROOT_DIR="$1"
+ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
 CASSETTE_MINUTES=$2
+
+output_dir="$ROOT_DIR"
+should_remove_after_rename=true
+
+if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
+  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
+  should_remove_after_rename=false
+fi
 
 SIDE_SECONDS=$(((CASSETTE_MINUTES * 60) / 2))
 MARGIN=120 # 2 minutes
@@ -25,7 +36,7 @@ while IFS= read -r -d '' file; do
   dur=${dur:-0}
   durations+=("$dur")
   total_seconds=$(echo "$total_seconds + $dur" | bc)
-done < <(get_files_ext "$ROOT_DIR/mxtp" "mp3")
+done < <(get_files_ext "$ROOT_DIR" "mp3")
 
 if (($(echo "$total_seconds + 2*$MARGIN > $cassette_total_seconds" | bc -l))); then
   log_fatal "Total duration ($(from_seconds_to_duration "$total_seconds")) exceeds cassette limit of $CASSETTE_MINUTES min"
@@ -81,8 +92,13 @@ function process_side() {
     else
       new_name=$(printf "B%02d_%s.%s" "$_count" "$(basename "$f" ."$ext")" "$ext")
     fi
-    cp "$f" "$ROOT_DIR/mxtp/$new_name"
-    rm "$f"
+
+    cp "$f" "$output_dir/$new_name"
+
+    if [[ "$should_remove_after_rename" == true ]]; then
+      rm "$f"
+    fi
+
     ((_count++))
   done
 
@@ -92,7 +108,7 @@ function process_side() {
     silence_name=$(printf "B%02d_Silence.mp3" "$_count")
   fi
 
-  create_silence "$((CASSETTE_MINUTES * 60 / 2))" "$ROOT_DIR/mxtp/$silence_name"
+  create_silence "$((CASSETTE_MINUTES * 60 / 2))" "$output_dir/$silence_name"
 }
 
 process_side side1 "$side1_duration" "Side 1"

@@ -63,11 +63,9 @@ function validate_prepare_flags() {
   local -n _commands_opts=$2
   local _cassette_length_opts=$3
   local _ffmpeg_opts=$4
-  local _output_opts=$5
-  local _move_opts=$6
+  local _move_opts=$5
 
   local _requires_cassette_length=false
-  local _requires_output=false
 
   if [[ -z "$_input_opts" ]]; then
     log_fatal "Input (-i) flag is required."
@@ -80,36 +78,23 @@ function validate_prepare_flags() {
   for cmd in "${_commands_opts[@]}"; do
     local _is_valid=false
     local _valid_commands=("$CMD_DURATION" "$CMD_TRIM" "$CMD_NORMALIZE" "$CMD_REORGANIZE")
-    
+
     for valid_cmd in "${_valid_commands[@]}"; do
       if [[ "$cmd" == "$valid_cmd" ]]; then
         _is_valid=true
-        
+
         if [[ "$cmd" == "$CMD_REORGANIZE" ]]; then
           _requires_cassette_length=true
-          _requires_output=true
-        elif [[ "$cmd" == "$CMD_TRIM" || "$cmd" == "$CMD_NORMALIZE" ]]; then
-          _requires_output=true
         fi
-        
+
         break
       fi
     done
-    
+
     if [[ "$_is_valid" != true ]]; then
       log_fatal "Unrecognized command '$cmd'"
     fi
   done
-
-  if [[ "$_requires_output" == true ]]; then
-    if [[ -z "$_output_opts" ]]; then
-      log_fatal "Output (-o) flag is required when using trim, normalize, or reorganize commands."
-    fi
-    
-    if [[ ! -d "$_output_opts" ]]; then
-      log_fatal "Output directory '$_output_opts' does not exist or is not a directory."
-    fi
-  fi
 
   if [[ "$_requires_cassette_length" == true ]]; then
     if [[ -z "$_cassette_length_opts" ]]; then

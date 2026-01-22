@@ -4,8 +4,13 @@ source "$MXTP_ROOT_DIR/lib/pb.sh"
 source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
+source "$MXTP_ROOT_DIR/lib/consts.sh"
 
-ROOT_DIR="$1"
+ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
+
+if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
+  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+fi
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
 
@@ -15,7 +20,7 @@ processed_count=0
 
 failed_files=()
 
-before_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1" "-s")
+before_seconds=$(bash "$MXTP_ROOT_DIR/commands/duration.sh" "$ROOT_DIR" "-s")
 
 pb_init "$TOTAL_FILES" 30
 
@@ -23,8 +28,8 @@ while IFS= read -r -d '' file; do
   base="$(basename "$file")"
   name="${base%.*}"
 
-  tmp_file="$ROOT_DIR/mxtp/$name.tmp.wav"
-  output_file="$ROOT_DIR/mxtp/$base"
+  tmp_file="$ROOT_DIR/$CHILD_DIR_NAME/$name.tmp.wav"
+  output_file="$ROOT_DIR/$CHILD_DIR_NAME/$base"
 
   failed=false
 
@@ -63,7 +68,7 @@ while IFS= read -r -d '' file; do
   pb_update "$processed_count" "Trimming: $label"
 done < <(get_files_ext "$ROOT_DIR" "mp3")
 
-after_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1/mxtp" "-s")
+after_seconds=$(source "$MXTP_ROOT_DIR/commands/duration.sh" "$1/$CHILD_DIR_NAME" "-s")
 
 before_fmt=$(from_seconds_to_duration "$before_seconds")
 after_fmt=$(from_seconds_to_duration "$after_seconds")

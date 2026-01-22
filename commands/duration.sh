@@ -12,6 +12,8 @@ total_seconds=0
 processed_count=0
 is_only_seconds=false
 
+shift
+
 while getopts ":s" opt; do
   case "$opt" in
   s)
@@ -20,7 +22,7 @@ while getopts ":s" opt; do
   esac
 done
 
-if [[ "$is_only_seconds" == true ]]; then
+if [[ "$is_only_seconds" == false ]]; then
   pb_init "$TOTAL_FILES" 30
 fi
 
@@ -28,7 +30,7 @@ while IFS= read -r -d '' file; do
   seconds=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file" 2>/dev/null)
   total_seconds=$(echo "$total_seconds + $seconds" | bc)
 
-  if [[ "$is_only_seconds" == true ]]; then
+  if [[ "$is_only_seconds" == false ]]; then
     ((processed_count++))
 
     label=$(basename "$file")
