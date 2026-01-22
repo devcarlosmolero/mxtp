@@ -9,4 +9,5 @@ steps:
       - apk add --no-cache bash git
       - export MXTP_ROOT_DIR=$(pwd)
       - echo "$MXTP_ROOT_DIR"
+      - bash "$MXTP_ROOT_DIR/mxtp.sh --help"
       - bash lib/bashunit tests/
