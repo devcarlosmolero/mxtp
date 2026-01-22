@@ -5,8 +5,7 @@ when:
 steps:
   - name: test
     image: alpine:latest
-    environment:
-      MXTP_ROOT_DIR: ${CI_WORKSPACE}
     commands:
       - apk add --no-cache bash git
-      - export MXTP_ROOT_DIR="$(pwd)" && bash lib/bashunit tests/
+      - export MXTP_ROOT_DIR=$CI_WORKSPACE
+      - bash lib/bashunit tests/
