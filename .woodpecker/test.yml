@@ -6,8 +6,10 @@ steps:
   - name: test
     image: alpine:latest
     commands:
-      - apk add --no-cache bash git
+      - apk add --no-cache bash git ffmpeg gum python3 py3-pip
+      - python3 -m venv .venv
+      - . .venv/bin/activate
+      - pip install auto-editor
       - export MXTP_ROOT_DIR=$(pwd)
-      - echo "$MXTP_ROOT_DIR"
-      - bash "$MXTP_ROOT_DIR/mxtp.sh" --help
+      - chmod +x mxtp.sh
       - bash lib/bashunit tests/
