@@ -7,5 +7,6 @@ steps:
     image: alpine:latest
     commands:
       - apk add --no-cache bash git
-      - export MXTP_ROOT_DIR=$CI_WORKSPACE
+      - export MXTP_ROOT_DIR=$(pwd)
+      - echo "$MXTP_ROOT_DIR"
       - bash lib/bashunit tests/
