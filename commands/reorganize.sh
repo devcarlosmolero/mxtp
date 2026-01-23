@@ -140,6 +140,12 @@ for ((i = 0; i < max_rows; i++)); do
   table_content+="$a|$b\n"
 done
 
+# testing
+if [[ "$MXTP_ENV" == "test" ]]; then
+  echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\", \"should_remove_after_rename\": \"$should_remove_after_rename\", \"cassette_minutes\": \"$CASSETTE_MINUTES\"}" | jq .
+  exit 0
+fi
+
 printf "%b" "$table_content" | gum table --separator "|" --border double --cell.padding "0 1" --print
 
 echo

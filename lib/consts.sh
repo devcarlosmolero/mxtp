@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CHILD_DIR_NAME="mxtp"
+CHILD_DIR_NAME="__mxtp__"
 
 CMD_DURATION="duration"
 CMD_TRIM="trim"

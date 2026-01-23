@@ -45,5 +45,13 @@ if [[ "$is_only_seconds" == true ]]; then
   exit 0
 fi
 
+total_duration=$(from_seconds_to_duration "$total_seconds")
+
+# testing
+if [[ "$MXTP_ENV" == "test" ]]; then
+  echo "{\"root_dir\": \"$ROOT_DIR\", \"total_seconds\": \"$total_seconds\", \"total_duration\": \"$total_duration\"}" | jq .
+  exit 0
+fi
+
 echo
-echo "✔ Total duration: $(from_seconds_to_duration "$total_seconds")"
+echo "✔ Total duration: $total_duration"

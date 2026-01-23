@@ -14,6 +14,8 @@ ffmpeg_opts=
 output_opts=
 move_opts=
 
+is_help=false
+
 function execute() {
   case $1 in
   "$CMD_DURATION")
@@ -29,7 +31,7 @@ function execute() {
     bash "$MXTP_ROOT_DIR/commands/reorganize.sh" "$input_opts" "$cassette_length_opts"
     ;;
   "$CMD_MOVE")
-    bash "$MXTP_ROOT_DIR/commands/move.sh" "$input_opts"
+    bash "$MXTP_ROOT_DIR/commands/move.sh" "$input_opts" "$move_opts"
     ;;
   esac
 }
@@ -37,13 +39,9 @@ function execute() {
 check_dependency "bash"
 check_dependency "ffmpeg"
 check_dependency "auto-editor"
+check_dependency "jq"
 
 if [[ $CHOICE == "help" ]]; then
-  if [[ "$2" == "prepare" ]]; then
-    print_prepare_help
-    exit 0
-  fi
-
   print_help
   exit 0
 fi
@@ -51,7 +49,7 @@ fi
 if [[ $CHOICE == "prepare" ]]; then
   shift
 
-  while getopts "i:c:l:f:o:m:" opt; do
+  while getopts "i:c:l:f:o:m:h" opt; do
     case "$opt" in
     i)
       input_opts="$OPTARG"
@@ -71,8 +69,16 @@ if [[ $CHOICE == "prepare" ]]; then
     m)
       move_opts="$OPTARG"
       ;;
+    h)
+      is_help=true
+      ;;
     esac
   done
+
+  if [[ "$is_help" == true ]]; then
+    print_prepare_help
+    exit 0
+  fi
 
   validate_prepare_flags "$input_opts" commands_opts "$cassette_length_opts" "$ffmpeg_opts" "$output_opts" "$move_opts"
 
@@ -83,6 +89,10 @@ if [[ $CHOICE == "prepare" ]]; then
   for cmd in "${commands_opts[@]}"; do
     execute "$cmd"
   done
+
+  if [[ -n $move_opts ]]; then
+    execute "$CMD_MOVE"
+  fi
 fi
 
 if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" ]]; then

@@ -5,11 +5,15 @@ source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 source "$MXTP_ROOT_DIR/lib/consts.sh"
+source "$MXTP_ROOT_DIR/lib/logger.sh"
 
 ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
 
+output_dir="$ROOT_DIR"
+
 if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
   mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
 fi
 
 TOTAL_FILES=$(get_count_files_ext "$ROOT_DIR" "mp3")
@@ -28,8 +32,8 @@ while IFS= read -r -d '' file; do
   base="$(basename "$file")"
   name="${base%.*}"
 
-  tmp_file="$ROOT_DIR/$CHILD_DIR_NAME/$name.tmp.wav"
-  output_file="$ROOT_DIR/$CHILD_DIR_NAME/$base"
+  tmp_file="$output_dir/$name.tmp.wav"
+  output_file="$output_dir/$base"
 
   failed=false
 
@@ -77,6 +81,12 @@ if (($(echo "$before_seconds > 0" | bc -l))); then
   saved=$(echo "scale=2; 100 - ($after_seconds * 100 / $before_seconds)" | bc)
 else
   saved=0
+fi
+
+# testing
+if [[ "$MXTP_ENV" == "test" ]]; then
+  echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\"}" | jq .
+  exit 0
 fi
 
 echo

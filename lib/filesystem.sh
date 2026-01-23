@@ -14,7 +14,7 @@ function get_command_input_dir() {
 }
 
 function get_count_files_ext() {
-  find "$1" -maxdepth 1 -type f -iname "*.$2" | wc -l
+  find "$1" -maxdepth 1 -type f -iname "*.$2" | wc -l | xargs
 }
 
 function get_files_ext() {

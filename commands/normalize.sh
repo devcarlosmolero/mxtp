@@ -78,7 +78,12 @@ while IFS= read -r -d '' file; do
   pb_update "$processed_count" "Normalizing: $label"
 done < <(get_files_ext "$ROOT_DIR" "mp3")
 
-echo
+# testing
+if [[ "$MXTP_ENV" == "test" ]]; then
+  echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\"}" | jq .
+  exit 0
+fi
+
 echo "✔ Normalization complete!"
 
 print_failed_files $fail_count "$TOTAL_FILES" "${failed_files[@]}"
