@@ -20,7 +20,7 @@ function set_up() {
 function test_commands_command_duration_output() {
   local _output
 
-  _output=$(bash $MXTP_ROOT_DIR/commands/duration.sh $PARENT_DIR | awk '/^{/,/^}$/ {print}')
+  _output=$(bash $MXTP_ROOT_DIR/commands/duration.sh $PARENT_DIR | sed -n '/^{/,/}$/p')
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
