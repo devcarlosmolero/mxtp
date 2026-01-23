@@ -11,5 +11,6 @@ steps:
       - . .venv/bin/activate
       - pip install auto-editor
       - export MXTP_ROOT_DIR=$(pwd)
+      - export MXTP_ENV="test"
       - chmod +x mxtp.sh
-      - bash lib/bashunit tests/
+      - bash lib/bashunit tests
