@@ -22,7 +22,10 @@ function check_dependency() {
     command -v gum >/dev/null 2>&1 || { log_fatal "gum is required but not installed."; }
     ;;
   "jq")
-    command -v gum >/dev/null 2>&1 || { log_fatal "jq is required but not installed."; }
+    command -v jq >/dev/null 2>&1 || { log_fatal "jq is required but not installed."; }
+    ;;
+  "bc")
+    command -v bc >/dev/null 2>&1 || { log_fatal "bc is required but not installed."; }
     ;;
   esac
 }

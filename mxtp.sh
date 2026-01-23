@@ -39,7 +39,9 @@ function execute() {
 check_dependency "bash"
 check_dependency "ffmpeg"
 check_dependency "auto-editor"
+check_dependency "gum"
 check_dependency "jq"
+check_dependency "bc"
 
 if [[ $CHOICE == "help" ]]; then
   print_help
