@@ -4,15 +4,15 @@ PARENT_DIR="$(pwd)/commands-test"
 MOVE_DIR="$PARENT_DIR/mv"
 
 function set_up() {
-  local _duration=5
-  local _songs=("song1" "song2" "song3")
+  # local _duration=5
+  # local _songs=("song1" "song2" "song3")
 
   mkdir $PARENT_DIR
   mkdir $MOVE_DIR
 
-  for song in "${_songs[@]}"; do
-    ffmpeg -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3"
-  done
+  # for song in "${_songs[@]}"; do
+  #   ffmpeg -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3"
+  # done
 
   source "$MXTP_ROOT_DIR/lib/consts.sh"
 }

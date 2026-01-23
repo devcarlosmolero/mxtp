@@ -6,11 +6,11 @@ steps:
   - name: test
     image: alpine:latest
     commands:
-      - apk add --no-cache bash git ffmpeg lame gum python3 py3-pip jq bc coreutils findutils
+      - apk add --no-cache bash git ffmpeg gum python3 py3-pip jq bc
       - python3 -m venv .venv
       - . .venv/bin/activate
       - pip install auto-editor
       - export MXTP_ROOT_DIR=$(pwd)
       - export MXTP_ENV="test"
-      - find . -name "*.sh" -exec chmod +x {} +
+      - chmod +x mxtp.sh
       - bash lib/bashunit tests
