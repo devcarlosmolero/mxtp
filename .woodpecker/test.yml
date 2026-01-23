@@ -7,7 +7,6 @@ steps:
     image: alpine:latest
     commands:
       - apk add --no-cache \
-        bash \
         git \
         ffmpeg \
         lame \
