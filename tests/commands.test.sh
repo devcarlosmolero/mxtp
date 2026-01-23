@@ -31,7 +31,7 @@ function test_commands_command_duration_output() {
 function test_commands_command_trim_output() {
   local _output
 
-  _output=$(bash $MXTP_ROOT_DIR/commands/trim.sh $PARENT_DIR | awk '/^{/,/^}$/ {print}')
+  _output=$(bash $MXTP_ROOT_DIR/commands/trim.sh $PARENT_DIR | sed -n '/^{/,/}$/p')
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
@@ -41,7 +41,7 @@ function test_commands_command_trim_output() {
 function test_commands_command_normalize_output() {
   local _output
 
-  _output=$(bash $MXTP_ROOT_DIR/commands/normalize.sh $PARENT_DIR | awk '/^{/,/^}$/ {print}')
+  _output=$(bash $MXTP_ROOT_DIR/commands/normalize.sh $PARENT_DIR | sed -n '/^{/,/}$/p')
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
@@ -51,7 +51,7 @@ function test_commands_command_normalize_output() {
 function test_commands_command_reorganize_output() {
   local _output
 
-  _output=$(bash $MXTP_ROOT_DIR/commands/reorganize.sh $PARENT_DIR 46 | awk '/^{/,/^}$/ {print}')
+  _output=$(bash $MXTP_ROOT_DIR/commands/reorganize.sh $PARENT_DIR 46 | sed -n '/^{/,/}$/p')
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
