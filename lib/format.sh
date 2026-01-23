@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 function from_seconds_to_duration() {
-  local _total_sec=$(echo "$1" | awk '{print int($1)}')
+  local _total_sec=${1%.*}
+  _total_sec=${_total_sec:-0}
+
   local _hours=$((_total_sec / 3600))
   local _minutes=$(((_total_sec % 3600) / 60))
   local _seconds=$((_total_sec % 60))
@@ -25,4 +27,3 @@ function truncate() {
     echo "$_s"
   fi
 }
-

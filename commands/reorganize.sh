@@ -114,7 +114,8 @@ function process_side() {
 process_side side1 "$side1_duration" "Side 1"
 process_side side2 "$side2_duration" "Side 2"
 
-total_usage=$(echo "(($side1_duration + $side2_duration - 2*$MARGIN)/(2*$SIDE_SECONDS))*100" | bc -l | awk '{printf "%.1f", $0}')
+raw_usage=$(echo "(($side1_duration + $side2_duration - 2*$MARGIN)/(2*$SIDE_SECONDS))*100" | bc -l)
+total_usage=$(printf "%.1f" "$raw_usage")
 
 echo
 echo "Total cassette usage: $total_usage%"
