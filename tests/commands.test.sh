@@ -22,8 +22,6 @@ function test_commands_command_duration_output() {
 
   _output=$(bash $MXTP_ROOT_DIR/commands/duration.sh $PARENT_DIR | awk '/^{/,/^}$/ {print}' 2>&1)
 
-  echo "$_output"
-
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
   assert_equals "15.000000" "$(echo "$_output" | jq -r '.total_seconds')"

@@ -12,5 +12,6 @@ steps:
       - pip install auto-editor
       - export MXTP_ROOT_DIR=$(pwd)
       - export MXTP_ENV="test"
+      - export BASHUNIT_VERBOSE=true
       - chmod +x mxtp.sh
       - bash lib/bashunit tests
