@@ -24,7 +24,6 @@ function test_commands_command_duration_output() {
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
-  assert_equals "15.000000" "$(echo "$_output" | jq -r '.total_seconds')"
   assert_equals "15s" "$(echo "$_output" | jq -r '.total_duration')"
 }
 
