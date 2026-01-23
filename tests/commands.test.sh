@@ -4,15 +4,15 @@ PARENT_DIR="$(pwd)/commands-test"
 MOVE_DIR="$PARENT_DIR/mv"
 
 function set_up() {
-  # local _duration=5
-  # local _songs=("song1" "song2" "song3")
+  local _duration=5
+  local _songs=("song1" "song2" "song3")
 
   mkdir $PARENT_DIR
   mkdir $MOVE_DIR
 
-  # for song in "${_songs[@]}"; do
-  #   ffmpeg -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3"
-  # done
+  for song in "${_songs[@]}"; do
+    ffmpeg -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3"
+  done
 
   source "$MXTP_ROOT_DIR/lib/consts.sh"
 }
@@ -21,6 +21,8 @@ function test_commands_command_duration_output() {
   local _output
 
   _output=$(bash $MXTP_ROOT_DIR/commands/duration.sh $PARENT_DIR | awk '/^{/,/^}$/ {print}' 2>&1)
+
+  echo "$_output"
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
