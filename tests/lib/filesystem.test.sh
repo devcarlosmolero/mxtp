@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-PARENT_DIR="filesystem-test"
+PARENT_DIR="$(pwd)/filesystem-test"
 EXISTING_CHILD_DIR_NAME="exist"
 
 function set_up_before_script() {
   source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 
-  mkdir "$(pwd)/$PARENT_DIR"
-  mkdir "$(pwd)/$PARENT_DIR/$EXISTING_CHILD_DIR_NAME"
+  mkdir "$PARENT_DIR"
+  mkdir "$PARENT_DIR/$EXISTING_CHILD_DIR_NAME"
 }
 
 function test_filesystem_get_command_input_dir_returns_parent_dir_if_child_dir_does_not_exist() {
@@ -27,5 +27,5 @@ function test_filesystem_get_command_input_dir_returns_child_dir_if_it_exists() 
 }
 
 function tear_down_after_script() {
-  rm -rf "$(pwd)/$PARENT_DIR"
+  rm -rf "$PARENT_DIR"
 }

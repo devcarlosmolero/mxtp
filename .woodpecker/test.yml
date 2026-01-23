@@ -6,7 +6,18 @@ steps:
   - name: test
     image: alpine:latest
     commands:
-      - apk add --no-cache bash git ffmpeg gum python3 py3-pip jq bc
+      - apk add --no-cache \
+        bash \
+        git \
+        ffmpeg \
+        lame \
+        bc \
+        jq \
+        coreutils \
+        findutils \
+        python3 \
+        py3-pip \
+        gum
       - python3 -m venv .venv
       - . .venv/bin/activate
       - pip install auto-editor

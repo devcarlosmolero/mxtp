@@ -14,7 +14,6 @@ function set_up() {
     ffmpeg -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3"
   done
 
-  export MXTP_ENV="test"
   source "$MXTP_ROOT_DIR/lib/consts.sh"
 }
 
