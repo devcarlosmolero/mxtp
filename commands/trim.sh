@@ -12,7 +12,7 @@ ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
 output_dir="$ROOT_DIR"
 
 if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
-  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  mkdir -p "$ROOT_DIR/$CHILD_DIR_NAME"
   output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
 fi
 

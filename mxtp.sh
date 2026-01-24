@@ -25,7 +25,7 @@ function execute() {
     bash "$MXTP_ROOT_DIR/commands/trim.sh" "$input_opts"
     ;;
   "$CMD_NORMALIZE")
-    bash "$MXTP_ROOT_DIR/commands/normalize.sh" "$input_opts"
+    bash "$MXTP_ROOT_DIR/commands/normalize.sh" "$input_opts" "$ffmpeg_opts"
     ;;
   "$CMD_REORGANIZE")
     bash "$MXTP_ROOT_DIR/commands/reorganize.sh" "$input_opts" "$cassette_length_opts"

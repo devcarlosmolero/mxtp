@@ -6,8 +6,8 @@ EXISTING_CHILD_DIR_NAME="exist"
 function set_up_before_script() {
   source "$MXTP_ROOT_DIR/lib/filesystem.sh"
 
-  mkdir "$PARENT_DIR"
-  mkdir "$PARENT_DIR/$EXISTING_CHILD_DIR_NAME"
+  mkdir -p "$PARENT_DIR"
+  mkdir -p "$PARENT_DIR/$EXISTING_CHILD_DIR_NAME"
 }
 
 function test_filesystem_get_command_input_dir_returns_parent_dir_if_child_dir_does_not_exist() {

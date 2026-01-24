@@ -7,8 +7,8 @@ function set_up() {
   local _duration=5
   local _songs=("song1" "song2" "song3")
 
-  mkdir $PARENT_DIR
-  mkdir $MOVE_DIR
+  mkdir -p $PARENT_DIR
+  mkdir -p $MOVE_DIR
 
   for song in "${_songs[@]}"; do
     ffmpeg -nostdin -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -t "$_duration" -q:a 9 -acodec libmp3lame "$PARENT_DIR/$song.mp3" >/dev/null 2>&1
@@ -40,11 +40,12 @@ function test_commands_command_trim_output() {
 function test_commands_command_normalize_output() {
   local _output
 
-  _output=$(bash $MXTP_ROOT_DIR/commands/normalize.sh $PARENT_DIR | sed -n '/^{/,/}$/p')
+  _output=$(bash $MXTP_ROOT_DIR/commands/normalize.sh $PARENT_DIR "loudnorm=I=-11:TP=-1:LRA=11" | sed -n '/^{/,/}$/p')
 
   assert_exit_code 0
   assert_equals "$PARENT_DIR" "$(echo "$_output" | jq -r '.root_dir')"
   assert_equals "$PARENT_DIR/$CHILD_DIR_NAME" "$(echo "$_output" | jq -r '.output_dir')"
+  assert_equals "loudnorm=I=-11:TP=-1:LRA=11" "$(echo "$_output" | jq -r '.ffmpeg_opts')"
 }
 
 function test_commands_command_reorganize_output() {

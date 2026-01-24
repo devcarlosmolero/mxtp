@@ -7,12 +7,12 @@ source "$MXTP_ROOT_DIR/lib/consts.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 
 ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
-FFMPEG_OPTS="$2"
+FFMPEG_OPTS=${2:-"loudnorm=I=-14:TP=-3:LRA=10"}
 
 output_dir="$ROOT_DIR"
 
 if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
-  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  mkdir -p "$ROOT_DIR/$CHILD_DIR_NAME"
   output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
 fi
 
@@ -36,7 +36,7 @@ while IFS= read -r -d '' file; do
   failed=false
 
   loudnorm_stats=$(ffmpeg -nostdin -y -i "$file" \
-    -af "loudnorm=I=-14:TP=-3:LRA=10:print_format=json" \
+    -af "$FFMPEG_OPTS:print_format=json" \
     -f null - 2>&1)
 
   if [[ -z "$loudnorm_stats" ]]; then
@@ -48,8 +48,7 @@ while IFS= read -r -d '' file; do
     input_thresh=$(echo "$loudnorm_stats" | grep '"input_thresh"' | sed 's/[^0-9.\-]//g')
     offset=$(echo "$loudnorm_stats" | grep '"target_offset"' | sed 's/[^0-9.\-]//g')
 
-    if ! ffmpeg -nostdin -y -i "$file" \
-      -af "loudnorm=I=-14:TP=-3:LRA=10:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
+    if ! ffmpeg -nostdin -y -i "$file" -af "$FFMPEG_OPTS:measured_I=$input_i:measured_TP=$input_tp:measured_LRA=$input_lra:measured_thresh=$input_thresh:offset=$offset" \
       -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
       failed=true
     fi
@@ -80,7 +79,7 @@ done < <(get_files_ext "$ROOT_DIR" "mp3")
 
 # testing
 if [[ "$MXTP_ENV" == "test" ]]; then
-  echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\"}" | jq .
+  echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\", \"ffmpeg_opts\": \"$FFMPEG_OPTS\"}" | jq .
   exit 0
 fi
 

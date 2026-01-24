@@ -13,7 +13,7 @@ output_dir="$ROOT_DIR"
 should_remove_after_rename=true
 
 if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
-  mkdir "$ROOT_DIR/$CHILD_DIR_NAME"
+  mkdir -p "$ROOT_DIR/$CHILD_DIR_NAME"
   output_dir="$ROOT_DIR/$CHILD_DIR_NAME"
   should_remove_after_rename=false
 fi
