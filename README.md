@@ -4,6 +4,15 @@
 
 **MXTP** is a command-line tool to prepare and organize mixtapes for cassette recording with maximum quality. It helps you minimize distortion, optimize space, and balance track distribution between Side A and Side B.
 
+## 📋 Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Commands Overview](#commands-overview)
+    - [Sequential Export: The -m Flag](#sequential-export-the-m-flag)
+    - [License](#license)
+
 ## Requirements
 
 - Bash 5.\*
