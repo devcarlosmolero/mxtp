@@ -9,14 +9,12 @@ function print_help() {
   echo "  mxtp <command> [options]"
   echo
   echo "Commands:"
-  echo "  duration     Show the total playback duration of a mixtape"
   echo "  prepare      Run the main mixtape processing pipeline"
-  echo "  help         Show general help or help for a specific command"
+  echo "  help         Show general help, use -h to show help for the prepare command"
   echo
   echo "Examples:"
-  echo "  mxtp duration"
-  echo "  mxtp prepare -c trim,normalize -l 46"
-  echo "  mxtp help prepare"
+  echo "  mxtp prepare -i /path/to/dir -c duration,normalize -f \""loudnorm=I=-12:TP=-1:LRA=8"\""
+  echo "  mxtp prepare -i /path/to/dir -c duration,trim,normalize,reorganize -l 46 -m /path/to/external/volume"
   echo
 }
 
@@ -26,19 +24,26 @@ function print_prepare_help() {
   echo "  mxtp prepare [options]"
   echo
   echo "Options:"
-  echo "  -c <list>    Comma-separated list of commands to run"
-  echo "               Example: -c trim,normalize"
+  echo "  -i <path> (*)    Set the music files directory"
+  echo "                   Example: -i /path/to/dir"
   echo
-  echo "  -f <args>    ffmpeg loudnorm parameters (I, TP, LRA)"
-  echo "               Only applied when running the 'normalize' command"
-  echo "               Example: -f \"-14 -6 10\""
+  echo "  -c <list> (*)    Comma-separated list of commands to run"
+  echo "                   Available commands: duration,trim,normalize,reorganize"
+  echo "                   Example: -c trim,normalize"
   echo
-  echo "  -l <length> Cassette length in minutes"
-  echo "               Allowed values: 46, 60, 90"
-  echo "               Example: -l 46"
+  echo "  -f <args>        ffmpeg loudnorm parameters (I, TP, LRA)"
+  echo "                   Only applied when running the '$CMD_NORMALIZE' command"
+  echo "                   Example: -f \""loudnorm=I=-12:TP=-1:LRA=8"\""
   echo
-  echo "  -m <path>   Move output files to another directory or volume"
-  echo "               Example: -m \"\$HOME/example\""
+  echo "  -l <length>      Cassette length in minutes"
+  echo "                   Required when running the '$CMD_REORGANIZE' command"
+  echo "                   Allowed values: 46, 60, 90"
+  echo "                   Example: -l 46"
+  echo
+  echo "  -m <path>        Move output files to another directory or volume"
+  echo "                   Example: -m /path/to/dir"
+  echo
+  echo "  -h               Show help"
   echo
 }
 

@@ -11,7 +11,6 @@ input_opts=
 commands_opts=
 cassette_length_opts=
 ffmpeg_opts=
-output_opts=
 move_opts=
 
 is_help=false
@@ -51,7 +50,7 @@ fi
 if [[ $CHOICE == "prepare" ]]; then
   shift
 
-  while getopts "i:c:l:f:o:m:h" opt; do
+  while getopts "i:c:l:f:m:h" opt; do
     case "$opt" in
     i)
       input_opts="$OPTARG"
@@ -64,9 +63,6 @@ if [[ $CHOICE == "prepare" ]]; then
       ;;
     f)
       ffmpeg_opts="$OPTARG"
-      ;;
-    o)
-      output_opts="$OPTARG"
       ;;
     m)
       move_opts="$OPTARG"
