@@ -27,3 +27,7 @@ function truncate() {
     echo "$_s"
   fi
 }
+
+function trim_leading_numbers_and_spaces() {
+  echo "$1" | sed -E 's/^[0-9 :-]+//'
+}

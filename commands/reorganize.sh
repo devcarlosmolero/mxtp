@@ -86,11 +86,15 @@ function process_side() {
   local _count=1
 
   for f in "${_side_files[@]}"; do
-    ext="${f##*.}"
+    local _base=$(basename "$f")
+    local _ext="${_base##*.}"
+    local _raw_name="${_base%.*}"
+    local _name_only=$(trim_leading_numbers_and_spaces "$_raw_name")
+
     if [[ "$_label" == "Side 1" ]]; then
-      new_name=$(printf "A%02d_%s.%s" "$_count" "$(basename "$f" ."$ext")" "$ext")
+      new_name=$(printf "A%02d_%s.%s" "$_count" "$_name_only" "$_ext")
     else
-      new_name=$(printf "B%02d_%s.%s" "$_count" "$(basename "$f" ."$ext")" "$ext")
+      new_name=$(printf "B%02d_%s.%s" "$_count" "$_name_only" "$_ext")
     fi
 
     cp "$f" "$output_dir/$new_name"

@@ -42,6 +42,11 @@ check_dependency "gum"
 check_dependency "jq"
 check_dependency "bc"
 
+if [[ $CHOICE == "about" ]]; then
+  print_about
+  exit 0
+fi
+
 if [[ $CHOICE == "help" ]]; then
   print_help
   exit 0
@@ -93,7 +98,7 @@ if [[ $CHOICE == "prepare" ]]; then
   fi
 fi
 
-if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" ]]; then
+if [[ "$CHOICE" != "prepare" && "$CHOICE" != "help" && "$CHOICE" != "about" ]]; then
   print_help
   exit 0
 fi

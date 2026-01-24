@@ -3,6 +3,22 @@
 source "$MXTP_ROOT_DIR/lib/consts.sh"
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 
+function print_about() {
+  gum style \
+    --border rounded \
+    --border-foreground "#5F00FF" \
+    --padding "1 3" \
+    --width 62 \
+    --align left \
+    "$(gum style --bold --foreground "#FFAF00" "Give music value again")
+by recording and owning your own cassette collection.
+
+$(gum style --faint "Proudly coded by Carlos Molero")
+
+$(gum style --foreground "#00AFFF" "LinkedIn:") /in/iscarlosmolero
+$(gum style --foreground "#00AFFF" "Fediverse:") @iscarlosmolero"
+}
+
 function print_help() {
   echo
   echo "Usage:"
@@ -11,6 +27,7 @@ function print_help() {
   echo "Commands:"
   echo "  prepare      Run the main mixtape processing pipeline"
   echo "  help         Show general help, use -h to show help for the prepare command"
+  echo "  about        Show information about the author"
   echo
   echo "Examples:"
   echo "  mxtp prepare -i /path/to/dir -c duration,normalize -f \""loudnorm=I=-12:TP=-1:LRA=8"\""
