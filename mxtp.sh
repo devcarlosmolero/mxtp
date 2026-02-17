@@ -41,6 +41,7 @@ check_dependency "auto-editor"
 check_dependency "gum"
 check_dependency "jq"
 check_dependency "bc"
+check_dependency "parallel"
 
 if [[ $CHOICE == "about" ]]; then
   print_about

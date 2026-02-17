@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
+# Checks if required dependencies are installed.
+# This function verifies the presence and version of essential tools.
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 
+# Validates the installation and version of a dependency.
+#
+# Args:
+#   $1: The name of the dependency to check.
 function check_dependency() {
   case $1 in
   "bash")
@@ -26,6 +32,9 @@ function check_dependency() {
     ;;
   "bc")
     command -v bc >/dev/null 2>&1 || { log_fatal "bc is required but not installed."; }
+    ;;
+  "parallel")
+    command -v parallel >/dev/null 2>&1 || { log_fatal "parallel is required but not installed."; }
     ;;
   esac
 }

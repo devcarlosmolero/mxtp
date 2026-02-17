@@ -21,6 +21,7 @@
 - gum
 - jq
 - bc
+- parallel
 
 ## Installation
 
@@ -41,8 +42,8 @@ MXTP processes your audio files through 4 fundamental commands. These commands a
 | Command        | Description                                                                                                                                                                         |
 | :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Duration**   | Calculates and displays the total duration of all `.mp3` files within the target directory.                                                                                         |
-| **Trim**       | Automatically removes silences using `auto-editor` to save precious space on your cassettes.                                                                                        |
-| **Normalize**  | Adjusts audio peaks using `ffmpeg` to prevent distortion and ensure high-quality recording levels.                                                                                  |
+| **Trim**       | Automatically removes silences using `auto-editor` to save precious space on your cassettes. Processes files in parallel, leveraging the maximum available CPU cores for optimal performance.                                                                                        |
+| **Normalize**  | Adjusts audio peaks using `ffmpeg` to prevent distortion and ensure high-quality recording levels. Processes files in parallel, leveraging the maximum available CPU cores for optimal performance.                                                                                  |
 | **Reorganize** | Optimizes cassette space based on available capacity (46, 60, or 90 mins). It uses a balancing algorithm to distribute tracks between Side A and Side B for an even storage layout. |
 
 ### Sequential export

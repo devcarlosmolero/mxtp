@@ -6,6 +6,7 @@ source "$MXTP_ROOT_DIR/lib/cli.sh"
 source "$MXTP_ROOT_DIR/lib/format.sh"
 source "$MXTP_ROOT_DIR/lib/consts.sh"
 source "$MXTP_ROOT_DIR/lib/logger.sh"
+source "$MXTP_ROOT_DIR/lib/worker.sh"
 
 ROOT_DIR="$(get_command_input_dir $1 $CHILD_DIR_NAME)"
 
@@ -28,46 +29,42 @@ before_seconds=$(bash "$MXTP_ROOT_DIR/commands/duration.sh" "$ROOT_DIR" "-s")
 
 pb_init "$TOTAL_FILES" 30
 
+# Override custom_processing for trimming
+custom_processing() {
+  local tmp_file="$1"
+
+  if ! auto-editor "$tmp_file" \
+    --edit audio \
+    --output "$tmp_file" >/dev/null 2>&1; then
+    return 1
+  fi
+
+  return 0
+}
+
+export output_dir
+export -f custom_processing
+
+# Determine the number of CPU cores
+NUM_CORES=$(sysctl -n hw.ncpu)
+
+# Process files in parallel using GNU Parallel
+get_files_ext "$ROOT_DIR" "mp3" | parallel --will-cite -j "$NUM_CORES" -k --progress process_file
+
+# Update progress and collect results
 while IFS= read -r -d '' file; do
   base="$(basename "$file")"
-  name="${base%.*}"
 
-  tmp_file="$output_dir/$name.tmp.wav"
-  output_file="$output_dir/$base"
+  result=$(process_file "$file" 2>&1)
 
-  failed=false
-
-  if ! ffmpeg -nostdin -y -i "$file" -c:a pcm_s24le -ar 48000 -ac 2 "$tmp_file" >/dev/null 2>&1; then
-    failed=true
-  fi
-
-  if ! $failed; then
-    if ! auto-editor "$tmp_file" \
-      --edit audio \
-      --output "$tmp_file" >/dev/null 2>&1; then
-      failed=true
-    fi
-  fi
-
-  if ! $failed; then
-    if ! ffmpeg -nostdin -y -i "$tmp_file" \
-      -codec:a libmp3lame -b:a 320k \
-      "$output_file" >/dev/null 2>&1; then
-      failed=true
-    fi
-  fi
-
-  if $failed; then
+  if [[ "$result" == "SUCCESS:*" ]]; then
+    ((success_count++))
+  else
     ((fail_count++))
     failed_files+=("$base")
-    rm -f "$tmp_file"
-    continue
   fi
 
-  rm -f "$tmp_file"
-  ((success_count++))
   ((processed_count++))
-
   label=$(truncate "$base")
   pb_update "$processed_count" "Trimming: $label"
 done < <(get_files_ext "$ROOT_DIR" "mp3")
@@ -83,7 +80,6 @@ else
   saved=0
 fi
 
-# testing
 if [[ "$MXTP_ENV" == "test" ]]; then
   echo "{\"root_dir\": \"$ROOT_DIR\", \"output_dir\": \"$output_dir\"}" | jq .
   exit 0

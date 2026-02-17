@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
-function from_seconds_to_duration() {
+# Utility functions for formatting and truncating strings.
+
+# Converts a duration in seconds to a human-readable format (e.g., "1h 23m 45s").
+#
+# Args:
+#   $1: The duration in seconds.
+#
+# Returns:
+#   The formatted duration string.
+from_seconds_to_duration() {
   local _total_sec=${1%.*}
   _total_sec=${_total_sec:-0}
 
@@ -17,7 +26,14 @@ function from_seconds_to_duration() {
   fi
 }
 
-function truncate() {
+# Truncates a string to a maximum length and appends an ellipsis if necessary.
+#
+# Args:
+#   $1: The string to truncate.
+#
+# Returns:
+#   The truncated string.
+truncate() {
   local _s="$1"
   local _max=40
 
@@ -28,6 +44,13 @@ function truncate() {
   fi
 }
 
-function trim_leading_numbers_and_spaces() {
+# Trims leading numbers and spaces from a string.
+#
+# Args:
+#   $1: The string to trim.
+#
+# Returns:
+#   The trimmed string.
+trim_leading_numbers_and_spaces() {
   echo "$1" | sed -E 's/^[0-9 :-]+//'
 }

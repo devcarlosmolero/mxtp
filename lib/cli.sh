@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+# CLI utility functions for MXTP.
+# This file contains functions for printing help messages and validating input flags.
+
 source "$MXTP_ROOT_DIR/lib/consts.sh"
 source "$MXTP_ROOT_DIR/lib/logger.sh"
 
-function print_about() {
+# Prints information about the author and the project.
+print_about() {
   gum style \
     --border rounded \
     --border-foreground "#5F00FF" \
@@ -19,7 +23,8 @@ $(gum style --foreground "#00AFFF" "LinkedIn:") /in/iscarlosmolero
 $(gum style --foreground "#00AFFF" "Fediverse:") @iscarlosmolero"
 }
 
-function print_help() {
+# Prints general help information for MXTP.
+print_help() {
   echo
   echo "Usage:"
   echo "  mxtp <command> [options]"
@@ -35,7 +40,8 @@ function print_help() {
   echo
 }
 
-function print_prepare_help() {
+# Prints help information for the prepare command.
+print_prepare_help() {
   echo
   echo "Usage:"
   echo "  mxtp prepare [options]"
@@ -64,7 +70,13 @@ function print_prepare_help() {
   echo
 }
 
-function print_failed_files() {
+# Prints a list of failed files.
+#
+# Args:
+#   $1: The number of failed files.
+#   $2: The total number of files.
+#   $@: The list of failed files.
+print_failed_files() {
   local _fail_count="$1"
   local _total="$2"
   shift 2
@@ -80,7 +92,15 @@ function print_failed_files() {
   done
 }
 
-function validate_prepare_flags() {
+# Validates the flags provided to the prepare command.
+#
+# Args:
+#   $1: The input directory.
+#   $2: The list of commands to run.
+#   $3: The cassette length.
+#   $4: The ffmpeg options.
+#   $5: The move directory.
+validate_prepare_flags() {
   local _input_opts=$1
   local -n _commands_opts=$2
   local _cassette_length_opts=$3
