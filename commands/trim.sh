@@ -29,7 +29,6 @@ before_seconds=$(bash "$MXTP_ROOT_DIR/commands/duration.sh" "$ROOT_DIR" "-s")
 
 pb_init "$TOTAL_FILES" 30
 
-# Override custom_processing for trimming
 custom_processing() {
   local tmp_file="$1"
 
@@ -45,13 +44,10 @@ custom_processing() {
 export output_dir
 export -f custom_processing
 
-# Determine the number of CPU cores
 NUM_CORES=$(sysctl -n hw.ncpu)
 
-# Process files in parallel using GNU Parallel
 get_files_ext "$ROOT_DIR" "mp3" | parallel --will-cite -j "$NUM_CORES" -k --progress process_file
 
-# Update progress and collect results
 while IFS= read -r -d '' file; do
   base="$(basename "$file")"
 

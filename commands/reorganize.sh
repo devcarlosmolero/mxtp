@@ -19,7 +19,7 @@ if ! [[ "$ROOT_DIR" == *"$CHILD_DIR_NAME"* ]]; then
 fi
 
 SIDE_SECONDS=$(((CASSETTE_MINUTES * 60) / 2))
-MARGIN=120 # 2 minutes
+MARGIN=120
 
 pb_init 100 30
 
