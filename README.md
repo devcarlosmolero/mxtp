@@ -1,5 +1,4 @@
-
-# MXTP - Mixtape CLI Tools
+# MXTP
 
 [![Tests](https://woodpecker.carlosmolero.com/api/badges/5/status.svg)](https://woodpecker.carlosmolero.com/repos/5)
 
