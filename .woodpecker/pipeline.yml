@@ -18,6 +18,9 @@ steps:
 
   - name: sync-to-github
     image: alpine:latest
+    environment:
+      - GITHUB_SSH_KEY
+        from_secret: github_ssh_key
     commands:
       - apk add --no-cache git openssh-client
       - mkdir -p ~/.ssh
@@ -26,4 +29,3 @@ steps:
       - ssh-keyscan github.com >> ~/.ssh/known_hosts
       - git remote add github git@github.com:devcarlosmolero/mxtp.git || true
       - git push github master
-    secrets: [github_ssh_key]
