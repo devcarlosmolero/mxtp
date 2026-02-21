@@ -20,7 +20,7 @@ steps:
     image: alpine:latest
     environment:
       GITHUB_SSH_KEY:
-        from_secret: github_ssh_key
+        from_secret: GITHUB_SSH_KEY
     commands:
       - apk add --no-cache git openssh-client
       - mkdir -p ~/.ssh
