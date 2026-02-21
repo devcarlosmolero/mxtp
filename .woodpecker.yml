@@ -16,7 +16,7 @@ steps:
       - chmod +x mxtp.sh
       - bash lib/bashunit tests
 
-  - name: sync-to-github
+  - name: mirror
     image: alpine:latest
     environment:
       GITHUB_SSH_KEY:
@@ -28,4 +28,5 @@ steps:
       - chmod 600 ~/.ssh/id_rsa
       - ssh-keyscan github.com >> ~/.ssh/known_hosts
       - git remote add github git@github.com:devcarlosmolero/mxtp.git || true
-      - git push --force github master
+      - git fetch github master || true
+      - git push --force --all github
