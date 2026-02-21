@@ -1,10 +1,11 @@
+
 # MXTP - Mixtape CLI Tools
 
 [![Tests](https://woodpecker.carlosmolero.com/api/badges/5/status.svg)](https://woodpecker.carlosmolero.com/repos/5)
 
 **MXTP** is a command-line tool to prepare and organize mixtapes for cassette recording with maximum quality. It helps you minimize distortion, optimize space, and balance track distribution between Side A and Side B.
 
-![Codeberg](https://codeberg.org/devcarlosmolero/mxtp/raw/branch/master/mirror.svg))](https://codeberg.org/devcarlosmolero/mxtp)
+<a href="https://codeberg.org/devcarlosmolero/mxtp" target="_blank" noopener noreferrer><img width="200px" src="https://codeberg.org/devcarlosmolero/mxtp/raw/branch/master/mirror.svg"></a>
 
 ## Table of Contents
 
