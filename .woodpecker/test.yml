@@ -15,3 +15,15 @@ steps:
       - export BASHUNIT_VERBOSE=true
       - chmod +x mxtp.sh
       - bash lib/bashunit tests
+
+  - name: sync-to-github
+    image: alpine:latest
+    commands:
+      - apk add --no-cache git openssh-client
+      - mkdir -p ~/.ssh
+      - echo "$GITHUB_SSH_KEY" > ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - git remote add github git@github.com:devcarlosmolero/mxtp.git || true
+      - git push github master
+    secrets: [github_ssh_key]
